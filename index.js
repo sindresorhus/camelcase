@@ -1,7 +1,12 @@
 'use strict';
 module.exports = function (str) {
+	str = str.trim();
+
+	if (str.length === 1) {
+		return str;
+	}
+
 	return str
-	.trim()
 	.replace(/^[_.\- ]+/, '')
 	.toLowerCase()
 	.replace(/[_.\- ]+(\w|$)/g, function (m, p1) {

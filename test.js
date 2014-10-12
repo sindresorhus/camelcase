@@ -20,4 +20,6 @@ test(function (t) {
 	t.assert(camelCase('__foo__bar__') === 'fooBar');
 	t.assert(camelCase('foo bar') === 'fooBar');
 	t.assert(camelCase('  foo  bar  ') === 'fooBar');
+	t.assert(camelCase('-') === '-');
+	t.assert(camelCase(' - ') === '-');
 });
