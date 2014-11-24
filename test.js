@@ -2,7 +2,7 @@
 var test = require('ava');
 var camelCase = require('./');
 
-test(function (t) {
+test('camelCase', function (t) {
 	t.assert(camelCase('foo') === 'foo');
 	t.assert(camelCase('foo-bar') === 'fooBar');
 	t.assert(camelCase('foo-bar-baz') === 'fooBarBaz');
@@ -22,4 +22,6 @@ test(function (t) {
 	t.assert(camelCase('  foo  bar  ') === 'fooBar');
 	t.assert(camelCase('-') === '-');
 	t.assert(camelCase(' - ') === '-');
+	t.assert(camelCase('fooBar') === 'fooBar');
+	t.assert(camelCase('fooBar-baz') === 'foobarBaz');
 });

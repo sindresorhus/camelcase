@@ -2,7 +2,7 @@
 module.exports = function (str) {
 	str = str.trim();
 
-	if (str.length === 1) {
+	if (str.length === 1 || !(/[_.\- ]+/).test(str) ) {
 		return str;
 	}
 
