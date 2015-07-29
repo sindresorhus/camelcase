@@ -27,4 +27,7 @@ test('camelCase', function (t) {
 	t.assert(camelCase('F') === 'f');
 	t.assert(camelCase('Foo') === 'foo');
 	t.assert(camelCase('FOO') === 'foo');
+	t.assert(camelCase('foo', 'bar') === 'fooBar');
+	t.assert(camelCase('foo', '-bar') === 'fooBar');
+	t.assert(camelCase('foo', '-bar', 'baz') === 'fooBarBaz');
 });
