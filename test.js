@@ -30,4 +30,9 @@ test('camelCase', function (t) {
 	t.assert(camelCase('foo', 'bar') === 'fooBar');
 	t.assert(camelCase('foo', '-bar') === 'fooBar');
 	t.assert(camelCase('foo', '-bar', 'baz') === 'fooBarBaz');
+	t.assert(camelCase('', '') === '');
+	t.assert(camelCase('--') === '');
+	t.assert(camelCase('') === '');
+	t.assert(camelCase('--__--_--_') === '');
+	t.assert(camelCase('---_', '--', '', '-_- ') === '');
 });
