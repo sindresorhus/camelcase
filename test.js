@@ -1,5 +1,5 @@
 import test from 'ava';
-import fn from './';
+import fn, {constructor as ct} from './';
 
 test('camelCase', t => {
 	t.is(fn('foo'), 'foo');
@@ -26,10 +26,15 @@ test('camelCase', t => {
 	t.is(fn('F'), 'f');
 	t.is(fn('Foo'), 'foo');
 	t.is(fn('FOO'), 'foo');
+	t.is(ct('FOO'), 'Foo');
 	t.is(fn('foo', 'bar'), 'fooBar');
+	t.is(ct('foo', 'bar'), 'FooBar');
 	t.is(fn('foo', '-bar'), 'fooBar');
+	t.is(ct('foo', '-bar'), 'FooBar');
 	t.is(fn('foo', '-bar', 'baz'), 'fooBarBaz');
+	t.is(ct('foo', '-bar', 'baz'), 'FooBarBaz');
 	t.is(fn('', ''), '');
+	t.is(ct('', ''), '');
 	t.is(fn('--'), '');
 	t.is(fn(''), '');
 	t.is(fn('--__--_--_'), '');
