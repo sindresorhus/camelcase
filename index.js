@@ -1,5 +1,8 @@
 'use strict';
-module.exports = function () {
+camelCase.constructor = constructor;
+module.exports = camelCase;
+
+function camelCase() {
 	var str = [].map.call(arguments, function (str) {
 		return str.trim();
 	}).filter(function (str) {
@@ -24,4 +27,12 @@ module.exports = function () {
 	.replace(/[_.\- ]+(\w|$)/g, function (m, p1) {
 		return p1.toUpperCase();
 	});
-};
+}
+
+function constructor() {
+	var str = camelCase.apply(null, arguments);
+	if (str.length) {
+		str = str[0].toUpperCase() + str.substring(1);
+	}
+	return str;
+}
