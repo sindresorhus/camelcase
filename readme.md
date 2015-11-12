@@ -48,7 +48,8 @@ camelCase('__foo__', '--bar');
 
 ## Related
 
-See [`decamelize`](https://github.com/sindresorhus/decamelize) for the inverse.
+- [decamelize](https://github.com/sindresorhus/decamelize) - The inverse of this module
+- [uppercamelcase](https://github.com/SamVerschueren/uppercamelcase) - Like this module, but to PascalCase instead of camelCase
 
 
 ## License
