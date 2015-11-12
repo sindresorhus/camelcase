@@ -48,8 +48,8 @@ camelCase('__foo__', '--bar');
 
 ## Related
 
-See [`decamelize`](https://github.com/sindresorhus/decamelize) for the inverse.
-
+- [`decamelize`](https://github.com/sindresorhus/decamelize) - Inverse of this library
+- [`uppercamelcase`](https://github.com/SamVerschueren/uppercamelcase) - Convert a dash/dot/underscore/space separated string to UpperCamelCase
 
 ## License
 
