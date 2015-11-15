@@ -10,7 +10,11 @@ module.exports = function () {
 		return '';
 	}
 
-	if (str.length === 1 || !(/[_.\- ]+/).test(str)) {
+	if (str.length === 1) {
+		return str;
+	}
+
+	if (!(/[_.\- ]+/).test(str)) {
 		if (str[0] === str[0].toLowerCase() && str.slice(1) !== str.slice(1).toLowerCase()) {
 			return str;
 		}
