@@ -15,11 +15,15 @@ module.exports = function () {
 	}
 
 	if (!(/[_.\- ]+/).test(str)) {
-		if (str[0] === str[0].toLowerCase() && str.slice(1) !== str.slice(1).toLowerCase()) {
-			return str;
+		if (str === str.toUpperCase()) {
+			return str.toLowerCase();
 		}
 
-		return str.toLowerCase();
+		if (str[0] !== str[0].toLowerCase()) {
+			return str[0].toLowerCase() + str.slice(1);
+		}
+
+		return str;
 	}
 
 	return str
