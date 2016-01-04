@@ -34,7 +34,7 @@ module.exports = function () {
 			isLastCharLower = false;
 			i++;
 		} else {
-			isLastCharLower = (c.toLowerCase() === c);
+			isLastCharLower = c.toLowerCase() === c;
 		}
 	}
 
