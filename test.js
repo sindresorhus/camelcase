@@ -9,6 +9,7 @@ test('camelCase', t => {
 	t.is(fn('--foo-bar'), 'fooBar');
 	t.is(fn('--foo--bar'), 'fooBar');
 	t.is(fn('FOO-BAR'), 'fooBar');
+	t.is(fn('FOÈ-BAR'), 'foèBar');
 	t.is(fn('-foo-bar-'), 'fooBar');
 	t.is(fn('--foo--bar--'), 'fooBar');
 	t.is(fn('foo.bar'), 'fooBar');
@@ -23,9 +24,11 @@ test('camelCase', t => {
 	t.is(fn(' - '), '-');
 	t.is(fn('fooBar'), 'fooBar');
 	t.is(fn('fooBar-baz'), 'fooBarBaz');
+	t.is(fn('foìBar-baz'), 'foìBarBaz');
 	t.is(fn('fooBarBaz-bazzy'), 'fooBarBazBazzy');
 	t.is(fn('FBBazzy'), 'fBBazzy');
 	t.is(fn('F'), 'F');
+	t.is(fn('FBBÈzzy'), 'fBBÈzzy');
 	t.is(fn('FooBar'), 'fooBar');
 	t.is(fn('Foo'), 'foo');
 	t.is(fn('FOO'), 'foo');
