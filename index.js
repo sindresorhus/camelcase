@@ -1,5 +1,26 @@
 'use strict';
 module.exports = function () {
+	/**
+ 	 * Preserve old camel case segments.
+   *
+   * @param {String} str
+   * @return {String} str
+   */
+	function preserveCamelCase(str) {
+		var isLastCharLower = false;
+		for (var i = 0; i < str.length; i++) {
+			var c = str.charAt(i);
+			if (isLastCharLower && c.toUpperCase() === c) {
+				str = str.substr(0, i) + '-' + str.substr(i);
+				isLastCharLower = false;
+				i++;
+			} else {
+				isLastCharLower = (c.toLowerCase() === c);
+			}
+		}
+		return str;
+	}
+
 	var str = [].map.call(arguments, function (str) {
 		return str.trim();
 	}).filter(function (str) {
@@ -26,17 +47,7 @@ module.exports = function () {
 		return str;
 	}
 
-	var isLastCharLower = false;
-	for (var i = 0; i < str.length; i++) {
-		var c = str.charAt(i);
-		if (isLastCharLower && c.toUpperCase() === c) {
-			str = str.substr(0, i) + '-' + str.substr(i);
-			isLastCharLower = false;
-			i++;
-		} else {
-			isLastCharLower = c.toLowerCase() === c;
-		}
-	}
+	str = preserveCamelCase(str);
 
 	return str
 	.replace(/^[_.\- ]+/, '')
