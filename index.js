@@ -1,4 +1,23 @@
 'use strict';
+
+function preserveCamelCase(str) {
+	var isLastCharLower = false;
+
+	for (var i = 0; i < str.length; i++) {
+		var c = str.charAt(i);
+
+		if (isLastCharLower && c.toUpperCase() === c) {
+			str = str.substr(0, i) + '-' + str.substr(i);
+			isLastCharLower = false;
+			i++;
+		} else {
+			isLastCharLower = (c.toLowerCase() === c);
+		}
+	}
+
+	return str;
+}
+
 module.exports = function () {
 	var str = [].map.call(arguments, function (str) {
 		return str.trim();
@@ -25,6 +44,8 @@ module.exports = function () {
 
 		return str;
 	}
+
+	str = preserveCamelCase(str);
 
 	return str
 	.replace(/^[_.\- ]+/, '')
