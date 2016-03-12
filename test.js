@@ -40,4 +40,8 @@ test('camelCase', t => {
 	t.is(fn(''), '');
 	t.is(fn('--__--_--_'), '');
 	t.is(fn('---_', '--', '', '-_- '), '');
+	t.is(fn('foo bar?'), 'fooBar?');
+	t.is(fn('foo bar!'), 'fooBar!');
+	t.is(fn('foo bar$'), 'fooBar$');
+	t.is(fn('foo-bar#'), 'fooBar#');
 });
