@@ -27,7 +27,7 @@ test('camelCase', t => {
 	t.is(fn('foìBar-baz'), 'foìBarBaz');
 	t.is(fn('fooBarBaz-bazzy'), 'fooBarBazBazzy');
 	t.is(fn('FBBazzy'), 'fBBazzy');
-	t.is(fn('F'), 'F');
+	t.is(fn('F'), 'f');
 	t.is(fn('FBBÈzzy'), 'fBBÈzzy');
 	t.is(fn('FooBar'), 'fooBar');
 	t.is(fn('Foo'), 'foo');
