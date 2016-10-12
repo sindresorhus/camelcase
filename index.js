@@ -36,7 +36,7 @@ module.exports = function () {
 		return str.length;
 	}).join('-');
 
-	if (!str.length) {
+	if (str.length === 0) {
 		return '';
 	}
 
