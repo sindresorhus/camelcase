@@ -6,7 +6,7 @@ function preserveCamelCase(str) {
 	let isLastLastCharUpper = false;
 
 	for (let i = 0; i < str.length; i++) {
-		const c = str.charAt(i);
+		const c = str[i];
 
 		if (isLastCharLower && (/[a-zA-Z]/).test(c) && c.toUpperCase() === c) {
 			str = str.substr(0, i) + '-' + str.substr(i);
@@ -30,7 +30,11 @@ function preserveCamelCase(str) {
 }
 
 module.exports = function () {
-	let str = [].map.call(arguments, x => x.trim()).filter(x => x.length).join('-');
+	let str = Array
+		.from(arguments)
+		.map(x => x.trim())
+		.filter(x => x.length)
+		.join('-');
 
 	if (str.length === 0) {
 		return '';
