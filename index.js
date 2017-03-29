@@ -29,12 +29,15 @@ function preserveCamelCase(str) {
 	return str;
 }
 
-module.exports = function () {
-	let str = Array
-		.from(arguments)
-		.map(x => x.trim())
-		.filter(x => x.length)
-		.join('-');
+module.exports = function (str) {
+	if (arguments.length > 1) {
+		str = Array.from(arguments)
+			.map(x => x.trim())
+			.filter(x => x.length)
+			.join('-');
+	} else {
+		str = str.trim();
+	}
 
 	if (str.length === 0) {
 		return '';
@@ -44,7 +47,15 @@ module.exports = function () {
 		return str.toLowerCase();
 	}
 
-	str = preserveCamelCase(str);
+	if (/^[a-z0-9]+$/.test(str)) {
+		return str;
+	}
+
+	const hasUpperCase = str !== str.toLowerCase();
+
+	if (hasUpperCase) {
+		str = preserveCamelCase(str);
+	}
 
 	return str
 		.replace(/^[_.\- ]+/, '')
