@@ -29,14 +29,29 @@ function preserveCamelCase(str) {
 	return str;
 }
 
+function flattenArray(arr) {
+	if (Array.isArray(arr)) {
+		return arr
+			.reduce((acc, x) => acc.concat(flattenArray(x)), []);
+	} else {
+		return arr;
+	};
+};
+
 module.exports = function (str) {
+	var arr;
 	if (arguments.length > 1) {
-		str = Array.from(arguments)
-			.map(x => x.trim())
-			.filter(x => x.length)
-			.join('-');
+		arr = flattenArray(Array.from(arguments));
+	} else if (Array.isArray(str)) {
+		arr = flattenArray(str);
 	} else {
 		str = str.trim();
+	}
+	
+	if (!arr) {
+		str = src.map(x => x.trim())
+			.filter(x => x.length)
+			.join('-');
 	}
 
 	if (str.length === 0) {
