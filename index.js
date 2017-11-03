@@ -1,32 +1,13 @@
 'use strict';
 
 function preserveCamelCase(str) {
-	let isLastCharLower = false;
-	let isLastCharUpper = false;
-	let isLastLastCharUpper = false;
-
-	for (let i = 0; i < str.length; i++) {
-		const c = str[i];
-
-		if (isLastCharLower && /[a-zA-Z]/.test(c) && c.toUpperCase() === c) {
-			str = str.substr(0, i) + '-' + str.substr(i);
-			isLastCharLower = false;
-			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = true;
-			i++;
-		} else if (isLastCharUpper && isLastLastCharUpper && /[a-zA-Z]/.test(c) && c.toLowerCase() === c) {
-			str = str.substr(0, i - 1) + '-' + str.substr(i - 1);
-			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = false;
-			isLastCharLower = true;
-		} else {
-			isLastCharLower = c.toLowerCase() === c;
-			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = c.toUpperCase() === c;
-		}
-	}
-
-	return str;
+	return str.replace(/([a-z][^A-Z]*)([A-Z])|([A-Z])([A-Z][a-z])/g, function () {
+		const $1 = arguments[1];
+		const $2 = arguments[2];
+		const $3 = arguments[3];
+		const $4 = arguments[4];
+		return ($1 || $3) + '-' + ($2 || $4);
+	});
 }
 
 module.exports = function (str) {
