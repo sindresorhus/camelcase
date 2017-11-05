@@ -10,6 +10,8 @@ test('camelCase', t => {
 	t.is(m('--foo--bar'), 'fooBar');
 	t.is(m('FOO-BAR'), 'fooBar');
 	t.is(m('FOÈ-BAR'), 'foèBar');
+	t.is(m('FOÈÈBar'), 'foèèBar');
+	t.is(m('FOÈBèr'), 'foèbèr');
 	t.is(m('-foo-bar-'), 'fooBar');
 	t.is(m('--foo--bar--'), 'fooBar');
 	t.is(m('foo.bar'), 'fooBar');
@@ -25,6 +27,7 @@ test('camelCase', t => {
 	t.is(m('fooBar'), 'fooBar');
 	t.is(m('fooBar-baz'), 'fooBarBaz');
 	t.is(m('foìBar-baz'), 'foìBarBaz');
+	t.is(m('foììBar-baz'), 'foììBarBaz');
 	t.is(m('fooBarBaz-bazzy'), 'fooBarBazBazzy');
 	t.is(m('FBBazzy'), 'fbBazzy');
 	t.is(m('F'), 'f');
