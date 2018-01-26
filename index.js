@@ -29,7 +29,7 @@ function preserveCamelCase(str) {
 	return str;
 }
 
-module.exports = function (str) {
+var camelCase = function (str) {
 	if (arguments.length > 1) {
 		str = Array.from(arguments)
 			.map(x => x.trim())
@@ -62,3 +62,6 @@ module.exports = function (str) {
 		.toLowerCase()
 		.replace(/[_.\- ]+(\w|$)/g, (m, p1) => p1.toUpperCase());
 };
+
+module.exports = camelCase;
+module.exports.camelCase = camelCase;
