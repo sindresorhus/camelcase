@@ -50,6 +50,7 @@ camelCase('__foo__', '--bar');
 
 - [decamelize](https://github.com/sindresorhus/decamelize) - The inverse of this module
 - [uppercamelcase](https://github.com/SamVerschueren/uppercamelcase) - Like this module, but to PascalCase instead of camelCase
+- [titleize](https://github.com/sindresorhus/titleize) - Capitalize every word in string
 
 
 ## License
