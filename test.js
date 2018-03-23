@@ -1,5 +1,5 @@
 import test from 'ava';
-import m from './';
+import m from '.';
 
 test('camelCase', t => {
 	t.is(m('foo'), 'foo');

@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save camelcase
+$ npm install camelcase
 ```
 
 
