@@ -24,10 +24,10 @@ camelCase('foo_bar');
 camelCase('Foo-Bar');
 //=> 'fooBar'
 
-camelCase('--foo.bar');
-//=> 'fooBar'
+camelCase('Foo-Bar', {pascalCase: true});
+//=> 'FooBar'
 
-camelCase('__foo__bar__');
+camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
 camelCase('foo bar');
@@ -38,12 +38,34 @@ console.log(process.argv[3]);
 camelCase(process.argv[3]);
 //=> 'fooBar'
 
-camelCase('foo', 'bar');
+camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
-camelCase('__foo__', '--bar');
-//=> 'fooBar'
+camelCase(['__foo__', '--bar'], {pascalCase: true});
+//=> 'FooBar'
 ```
+
+
+## API
+
+### camelCase(input, [option])
+
+#### input
+
+Type: `string` `array`
+
+String/strings to convert to camelCase
+
+
+#### option
+
+**pascalCase**
+
+Type: `boolean`
+
+Default: `false`
+
+This argument is optional. The aim is to enable PascalCase: `foo-bar` → `FooBar`. If not considered, the default value is `false` and it will convert as camelCase: `foo-bar` → `fooBar`. 
 
 
 ## Related
