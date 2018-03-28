@@ -1,6 +1,6 @@
 # camelcase [![Build Status](https://travis-ci.org/sindresorhus/camelcase.svg?branch=master)](https://travis-ci.org/sindresorhus/camelcase)
 
-> Convert a dash/dot/underscore/space separated string to camelCase: `foo-bar` → `fooBar`
+> Convert a dash/dot/underscore/space separated string to camelCase: `foo-bar` → `fooBar` or PascalCase: `foo-bar` → `FooBar`
 
 
 ## Install
@@ -24,10 +24,10 @@ camelCase('foo_bar');
 camelCase('Foo-Bar');
 //=> 'fooBar'
 
-camelCase('--foo.bar');
-//=> 'fooBar'
+camelCase('Foo-Bar', {pascalCase: true});
+//=> 'FooBar'
 
-camelCase('__foo__bar__');
+camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
 camelCase('foo bar');
@@ -38,12 +38,34 @@ console.log(process.argv[3]);
 camelCase(process.argv[3]);
 //=> 'fooBar'
 
-camelCase('foo', 'bar');
+camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
-camelCase('__foo__', '--bar');
-//=> 'fooBar'
+camelCase(['__foo__', '--bar'], {pascalCase: true});
+//=> 'FooBar'
 ```
+
+
+## API
+
+### camelCase(input, [options])
+
+#### input
+
+Type: `string` `string[]`
+
+String to convert to camel case.
+
+#### options
+
+Type: `Object`
+
+##### pascalCase
+
+Type: `boolean`<br>
+Default: `false`
+
+Uppercase the first character: `foo-bar` → `FooBar`
 
 
 ## Related
