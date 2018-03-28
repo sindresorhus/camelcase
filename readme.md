@@ -48,24 +48,24 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 
 ## API
 
-### camelCase(input, [option])
+### camelCase(input, [options])
 
 #### input
 
-Type: `string` `array`
+Type: `string` `string[]`
 
-String/strings to convert to camelCase
+String to convert to camel case.
 
+#### options
 
-#### option
+Type: `Object`
 
-**pascalCase**
+##### pascalCase
 
-Type: `boolean`
-
+Type: `boolean`<br>
 Default: `false`
 
-This argument is optional. The aim is to enable PascalCase: `foo-bar` → `FooBar`. If not considered, the default value is `false` and it will convert as camelCase: `foo-bar` → `fooBar`. 
+Uppercase the first character: `foo-bar` → `FooBar`
 
 
 ## Related
