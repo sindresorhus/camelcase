@@ -1,21 +1,21 @@
 'use strict';
 
-function preserveCamelCase(str) {
+const preserveCamelCase = input => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
 
-	for (let i = 0; i < str.length; i++) {
-		const c = str[i];
+	for (let i = 0; i < input.length; i++) {
+		const c = input[i];
 
 		if (isLastCharLower && /[a-zA-Z]/.test(c) && c.toUpperCase() === c) {
-			str = str.substr(0, i) + '-' + str.substr(i);
+			input = input.slice(0, i) + '-' + input.slice(i);
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
 			i++;
 		} else if (isLastCharUpper && isLastLastCharUpper && /[a-zA-Z]/.test(c) && c.toLowerCase() === c) {
-			str = str.substr(0, i - 1) + '-' + str.substr(i - 1);
+			input = input.slice(0, i - 1) + '-' + input.slice(i - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
 			isLastCharLower = true;
@@ -26,44 +26,46 @@ function preserveCamelCase(str) {
 		}
 	}
 
-	return str;
-}
+	return input;
+};
 
-module.exports = function (str, opts) {
-	opts = Object.assign({
+module.exports = (input, options) => {
+	options = Object.assign({
 		pascalCase: false
-	}, opts);
+	}, options);
 
-	if (Array.isArray(str)) {
-		str = str.map(x => x.trim())
+	const postProcess = x => options.pascalCase ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+
+	if (Array.isArray(input)) {
+		input = input.map(x => x.trim())
 			.filter(x => x.length)
 			.join('-');
 	} else {
-		str = str.trim();
+		input = input.trim();
 	}
 
-	if (str.length === 0) {
+	if (input.length === 0) {
 		return '';
 	}
 
-	if (str.length === 1) {
-		return opts.pascalCase ? str.toUpperCase() : str.toLowerCase();
+	if (input.length === 1) {
+		return options.pascalCase ? input.toUpperCase() : input.toLowerCase();
 	}
 
-	if (/^[a-z0-9]+$/.test(str)) {
-		return opts.pascalCase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+	if (/^[a-z\d]+$/.test(input)) {
+		return postProcess(input);
 	}
 
-	const hasUpperCase = str !== str.toLowerCase();
+	const hasUpperCase = input !== input.toLowerCase();
 
 	if (hasUpperCase) {
-		str = preserveCamelCase(str);
+		input = preserveCamelCase(input);
 	}
 
-	str = str
+	input = input
 		.replace(/^[_.\- ]+/, '')
 		.toLowerCase()
 		.replace(/[_.\- ]+(\w|$)/g, (m, p1) => p1.toUpperCase());
 
-	return opts.pascalCase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+	return postProcess(input);
 };

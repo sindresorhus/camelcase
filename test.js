@@ -1,7 +1,7 @@
 import test from 'ava';
 import m from '.';
 
-test('camelCase default - with no options object', t => {
+test('camelCase', t => {
 	t.is(m('foo'), 'foo');
 	t.is(m('foo-bar'), 'fooBar');
 	t.is(m('foo-bar-baz'), 'fooBarBaz');
@@ -49,7 +49,7 @@ test('camelCase default - with no options object', t => {
 	t.is(m([]), '');
 });
 
-test('camelCase with pascalCase option set to true', t => {
+test('camelCase with pascalCase option', t => {
 	t.is(m('foo', {pascalCase: true}), 'Foo');
 	t.is(m('foo-bar', {pascalCase: true}), 'FooBar');
 	t.is(m('foo-bar-baz', {pascalCase: true}), 'FooBarBaz');

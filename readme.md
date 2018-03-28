@@ -1,6 +1,6 @@
 # camelcase [![Build Status](https://travis-ci.org/sindresorhus/camelcase.svg?branch=master)](https://travis-ci.org/sindresorhus/camelcase)
 
-> Convert a dash/dot/underscore/space separated string to camelCase: `foo-bar` → `fooBar` or PascalCase: `foo-bar` → `FooBar`
+> Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`
 
 
 ## Install
