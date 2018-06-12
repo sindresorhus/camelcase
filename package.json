@@ -16,6 +16,7 @@
 		"test": "xo && ava"
 	},
 	"files": [
+		"index.d.ts",
 		"index.js"
 	],
 	"keywords": [
