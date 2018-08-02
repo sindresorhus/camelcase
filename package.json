@@ -37,5 +37,8 @@
 	"devDependencies": {
 		"ava": "*",
 		"xo": "*"
+	},
+	"dependencies": {
+		"casex": "^2.0.0"
 	}
 }
