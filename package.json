@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"repository": "sindresorhus/camelcase",
 	"author": {
-		"name": "Boaz Hoch",
+		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
 		"url": "sindresorhus.com"
 	},
