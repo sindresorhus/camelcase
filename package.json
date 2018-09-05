@@ -13,11 +13,13 @@
 		"node": ">=6"
 	},
 	"scripts": {
-		"test": "xo && ava"
+		"test": "xo && ava",
+		"build:production": "NODE_ENV=production webpack --mode production --env=production"
 	},
 	"files": [
 		"index.js"
 	],
+	"main": "./dist/index.min.js",
 	"keywords": [
 		"camelcase",
 		"camel-case",
@@ -35,7 +37,14 @@
 		"pascal-case"
 	],
 	"devDependencies": {
+		"@babel/cli": "^7.0.0",
+		"@babel/core": "^7.0.0",
+		"@babel/preset-env": "^7.0.0",
 		"ava": "*",
+		"babel-loader": "^8.0.2",
+		"clean-webpack-plugin": "^0.1.19",
+		"webpack": "^4.17.2",
+		"webpack-cli": "^3.1.0",
 		"xo": "*"
 	}
 }
