@@ -81,6 +81,11 @@ Default: `false`
 Uppercase the first character: `foo-bar` → `FooBar`
 
 
+## Security
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.
+
+
 ## Related
 
 - [decamelize](https://github.com/sindresorhus/decamelize) - The inverse of this module
