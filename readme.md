@@ -43,6 +43,15 @@ camelCase('Foo-Bar', {pascalCase: true});
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
+camelCase('foo.bar', {ignoreDotNotation: false});
+//=> 'fooBar'
+
+camelCase('foo.bar', {ignoreDotNotation: true});
+//=> 'foo.bar'
+
+camelCase('foo.bar_baz', {ignoreDotNotation: true});
+//=> 'foo.barBaz'
+
 camelCase('foo bar');
 //=> 'fooBar'
 
@@ -79,6 +88,13 @@ Type: `boolean`<br>
 Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
+
+##### ignoreDotNotation
+
+Type: `boolean`<br>
+Default: `false`
+
+Ignores `.` as a word separating character: `foo.bar` → `foo.bar`
 
 
 ## Security

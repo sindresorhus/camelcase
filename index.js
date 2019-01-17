@@ -31,7 +31,8 @@ const preserveCamelCase = input => {
 
 module.exports = (input, options) => {
 	options = Object.assign({
-		pascalCase: false
+		pascalCase: false,
+		ignoreDotNotation: false
 	}, options);
 
 	const postProcess = x => options.pascalCase ? x.charAt(0).toUpperCase() + x.slice(1) : x;
@@ -62,10 +63,19 @@ module.exports = (input, options) => {
 		input = preserveCamelCase(input);
 	}
 
+	const replaceCharacterList = ['_', '\\-', ' '];
+
+	if (!options.ignoreDotNotation) {
+		replaceCharacterList.push('.');
+	}
+
+	const trimStartRegex = new RegExp(`^[${replaceCharacterList.join('')}]+`);
+	const camelCaseRegex = new RegExp(`[${replaceCharacterList.join('')}]+(\\w|$)`, 'g');
+
 	input = input
-		.replace(/^[_.\- ]+/, '')
+		.replace(trimStartRegex, '')
 		.toLowerCase()
-		.replace(/[_.\- ]+(\w|$)/g, (m, p1) => p1.toUpperCase());
+		.replace(camelCaseRegex, (m, p1) => p1.toUpperCase());
 
 	return postProcess(input);
 };
