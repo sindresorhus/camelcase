@@ -29,7 +29,7 @@ const preserveCamelCase = string => {
 	return string;
 };
 
-module.exports = (input, options) => {
+const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
 	}
@@ -73,3 +73,6 @@ module.exports = (input, options) => {
 
 	return postProcess(input);
 };
+
+module.exports = camelCase;
+module.exports.default = camelCase;
