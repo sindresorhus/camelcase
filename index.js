@@ -30,6 +30,10 @@ const preserveCamelCase = input => {
 };
 
 module.exports = (input, options) => {
+	if (!(typeof input === 'string' || Array.isArray(input))) {
+		throw new TypeError('Expected the input to be `string | string[]`');
+	}
+
 	options = Object.assign({
 		pascalCase: false
 	}, options);

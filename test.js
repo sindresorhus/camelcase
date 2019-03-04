@@ -96,3 +96,9 @@ test('camelCase with pascalCase option', t => {
 	t.is(m('Ajax-XMLHttpRequest', {pascalCase: true}), 'AjaxXmlHttpRequest');
 	t.is(m([], {pascalCase: true}), '');
 });
+
+test('invalid input', t => {
+	t.throws(() => {
+		m(1);
+	}, /Expected the input to be/);
+});
