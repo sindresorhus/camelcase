@@ -47,6 +47,8 @@ test('camelCase', t => {
 	t.is(camelCase('AjaxXMLHttpRequest'), 'ajaxXmlHttpRequest');
 	t.is(camelCase('Ajax-XMLHttpRequest'), 'ajaxXmlHttpRequest');
 	t.is(camelCase([]), '');
+	t.is(camelCase('mGridCol6@md'), 'mGridCol6@md');
+	t.is(camelCase('A::a'), 'a::a');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -95,6 +97,8 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('AjaxXMLHttpRequest', {pascalCase: true}), 'AjaxXmlHttpRequest');
 	t.is(camelCase('Ajax-XMLHttpRequest', {pascalCase: true}), 'AjaxXmlHttpRequest');
 	t.is(camelCase([], {pascalCase: true}), '');
+	t.is(camelCase('mGridCol6@md', {pascalCase: true}), 'MGridCol6@md');
+	t.is(camelCase('A::a', {pascalCase: true}), 'A::a');
 });
 
 test('invalid input', t => {
