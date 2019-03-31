@@ -13,7 +13,7 @@
 		"node": ">=6"
 	},
 	"scripts": {
-		"test": "xo && ava && tsd-check"
+		"test": "xo && ava && tsd"
 	},
 	"files": [
 		"index.js",
@@ -36,8 +36,8 @@
 		"pascal-case"
 	],
 	"devDependencies": {
-		"ava": "^1.2.1",
-		"tsd-check": "^0.3.0",
+		"ava": "^1.4.1",
+		"tsd": "^0.7.1",
 		"xo": "^0.24.0"
 	}
 }
