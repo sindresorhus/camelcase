@@ -20,9 +20,9 @@ const preserveCamelCase = string => {
 			isLastCharUpper = false;
 			isLastCharLower = true;
 		} else {
-			isLastCharLower = character.toLowerCase() === character;
+			isLastCharLower = character.toLowerCase() === character && character.toUpperCase() !== character;
 			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = character.toUpperCase() === character;
+			isLastCharUpper = character.toUpperCase() === character && character.toLowerCase() !== character;
 		}
 	}
 
