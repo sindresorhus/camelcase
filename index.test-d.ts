@@ -1,5 +1,5 @@
-import {expectType} from 'tsd-check';
-import camelCase from '.';
+import {expectType} from 'tsd';
+import camelCase = require('.');
 
 expectType<string>(camelCase('foo-bar'));
 expectType<string>(camelCase('Foo-Bar', {pascalCase: true}));
