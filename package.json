@@ -1,6 +1,6 @@
 {
 	"name": "camelcase",
-	"version": "5.2.0",
+	"version": "5.3.0",
 	"description": "Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`",
 	"license": "MIT",
 	"repository": "sindresorhus/camelcase",
@@ -13,7 +13,7 @@
 		"node": ">=6"
 	},
 	"scripts": {
-		"test": "xo && ava && tsd-check"
+		"test": "xo && ava && tsd"
 	},
 	"files": [
 		"index.js",
@@ -36,8 +36,8 @@
 		"pascal-case"
 	],
 	"devDependencies": {
-		"ava": "^1.2.1",
-		"tsd-check": "^0.3.0",
+		"ava": "^1.4.1",
+		"tsd": "^0.7.1",
 		"xo": "^0.24.0"
 	}
 }
