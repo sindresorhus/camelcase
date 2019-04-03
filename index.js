@@ -56,10 +56,6 @@ const camelCase = (input, options) => {
 		return options.pascalCase ? input.toUpperCase() : input.toLowerCase();
 	}
 
-	if (/^[a-z\d]+$/.test(input)) {
-		return postProcess(input);
-	}
-
 	const hasUpperCase = input !== input.toLowerCase();
 
 	if (hasUpperCase) {
@@ -69,7 +65,8 @@ const camelCase = (input, options) => {
 	input = input
 		.replace(/^[_.\- ]+/, '')
 		.toLowerCase()
-		.replace(/[_.\- ]+(\w|$)/g, (m, p1) => p1.toUpperCase());
+		.replace(/[_.\- ]+(\w|$)/g, (_, p1) => p1.toUpperCase())
+		.replace(/\d+(\w|$)/g, m => m.toUpperCase());
 
 	return postProcess(input);
 };
