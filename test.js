@@ -57,6 +57,7 @@ test('camelCase', t => {
 	t.is(camelCase('hello1'), 'hello1');
 	t.is(camelCase('1Hello'), '1Hello');
 	t.is(camelCase('1hello'), '1Hello');
+	t.is(camelCase('h2w'), 'h2W');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -115,6 +116,7 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('Hello1', {pascalCase: true}), 'Hello1');
 	t.is(camelCase('1hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('1Hello', {pascalCase: true}), '1Hello');
+	t.is(camelCase('h1W', {pascalCase: true}), 'H1W');
 });
 
 test('invalid input', t => {
