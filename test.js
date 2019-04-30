@@ -49,6 +49,14 @@ test('camelCase', t => {
 	t.is(camelCase([]), '');
 	t.is(camelCase('mGridCol6@md'), 'mGridCol6@md');
 	t.is(camelCase('A::a'), 'a::a');
+	t.is(camelCase('Hello1World'), 'hello1World');
+	t.is(camelCase('Hello11World'), 'hello11World');
+	t.is(camelCase('hello1world'), 'hello1World');
+	t.is(camelCase('Hello1World11foo'), 'hello1World11Foo');
+	t.is(camelCase('Hello1'), 'hello1');
+	t.is(camelCase('hello1'), 'hello1');
+	t.is(camelCase('1Hello'), '1Hello');
+	t.is(camelCase('1hello'), '1Hello');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -99,6 +107,14 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase([], {pascalCase: true}), '');
 	t.is(camelCase('mGridCol6@md', {pascalCase: true}), 'MGridCol6@md');
 	t.is(camelCase('A::a', {pascalCase: true}), 'A::a');
+	t.is(camelCase('Hello1World', {pascalCase: true}), 'Hello1World');
+	t.is(camelCase('Hello11World', {pascalCase: true}), 'Hello11World');
+	t.is(camelCase('hello1world', {pascalCase: true}), 'Hello1World');
+	t.is(camelCase('hello1World', {pascalCase: true}), 'Hello1World');
+	t.is(camelCase('hello1', {pascalCase: true}), 'Hello1');
+	t.is(camelCase('Hello1', {pascalCase: true}), 'Hello1');
+	t.is(camelCase('1hello', {pascalCase: true}), '1Hello');
+	t.is(camelCase('1Hello', {pascalCase: true}), '1Hello');
 });
 
 test('invalid input', t => {
