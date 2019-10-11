@@ -1,6 +1,6 @@
 'use strict';
 
-const preserveCamelCase = string => {
+function preserveCamelCase(string) {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
@@ -27,9 +27,9 @@ const preserveCamelCase = string => {
 	}
 
 	return string;
-};
+}
 
-const camelCase = (input, options) => {
+function camelCase(input, options) {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
 	}
@@ -38,11 +38,13 @@ const camelCase = (input, options) => {
 		pascalCase: false
 	}, options);
 
-	const postProcess = x => options.pascalCase ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+	const postProcess = function(x) {
+		return options.pascalCase ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+	};
 
 	if (Array.isArray(input)) {
-		input = input.map(x => x.trim())
-			.filter(x => x.length)
+		input = input.map(String.prototype.trim)
+			.filter(String.prototype.length)
 			.join('-');
 	} else {
 		input = input.trim();
@@ -65,7 +67,9 @@ const camelCase = (input, options) => {
 	input = input
 		.replace(/^[_.\- ]+/, '')
 		.toLowerCase()
-		.replace(/[_.\- ]+(\w|$)/g, (_, p1) => p1.toUpperCase())
+		.replace(/[_.\- ]+(\w|$)/g, function(_, p1) {
+			return p1.toUpperCase();
+		})
 		.replace(/\d+(\w|$)/g, m => m.toUpperCase());
 
 	return postProcess(input);
