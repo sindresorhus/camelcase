@@ -5,7 +5,7 @@ const preserveCamelCase = string => {
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
 
-	for (let i = 0; i < string.length; i++) {
+	for (i in string) {
 		const character = string[i];
 
 		if (isLastCharLower && /[a-zA-Z]/.test(character) && character.toUpperCase() === character) {
