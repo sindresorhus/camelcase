@@ -58,6 +58,7 @@ test('camelCase', t => {
 	t.is(camelCase('1Hello'), '1Hello');
 	t.is(camelCase('1hello'), '1Hello');
 	t.is(camelCase('h2w'), 'h2W');
+	t.is(camelCase('label-name-SC'), 'LabelNameSc');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -117,6 +118,75 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('1hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('1Hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('h1W', {pascalCase: true}), 'H1W');
+	t.is(camelCase('label-name-SC', {pascalCase: true}), 'LabelNameSc');
+});
+
+test('camelCase with saveCapital option', t => {
+	t.is(camelCase('foo', {saveCapital: true}), 'foo');
+	t.is(camelCase('foo-bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('foo-bar-baz', {saveCapital: true}), 'fooBarBaz');
+	t.is(camelCase('foo--bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('--foo-bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('--foo--bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('FOO-BAR', {saveCapital: true}), 'FOOBAR');
+	t.is(camelCase('FOÈ-BAR', {saveCapital: true}), 'FOÈBAR');
+	t.is(camelCase('-foo-bar-', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('--foo--bar--', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('foo.bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('foo..bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('..foo..bar..', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('foo_bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('__foo__bar__', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('__foo__bar__', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('foo bar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('  foo  bar  ', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('-', {saveCapital: true}), '-');
+	t.is(camelCase(' - ', {saveCapital: true}), '-');
+	t.is(camelCase('fooBar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('fooBar-baz', {saveCapital: true}), 'fooBarBaz');
+	t.is(camelCase('foìBar-baz', {saveCapital: true}), 'foìBarBaz');
+	t.is(camelCase('fooBarBaz-bazzy', {saveCapital: true}), 'fooBarBazBazzy');
+	t.is(camelCase('FBBazzy', {saveCapital: true}), 'FBBazzy');
+	t.is(camelCase('F', {saveCapital: true}), 'f');
+	t.is(camelCase('FooBar', {saveCapital: true}), 'fooBar');
+	t.is(camelCase('Foo', {saveCapital: true}), 'foo');
+	t.is(camelCase('FOO', {saveCapital: true}), 'FOO');
+	t.is(camelCase(['foo', 'bar']), 'fooBar');
+	t.is(camelCase(['foo', '-bar']), 'fooBar');
+	t.is(camelCase(['foo', '-bar', 'baz']), 'fooBarBaz');
+	t.is(camelCase(['', '']), '');
+	t.is(camelCase('--', {saveCapital: true}), '');
+	t.is(camelCase('', {saveCapital: true}), '');
+	t.is(camelCase('--__--_--_', {saveCapital: true}), '');
+	t.is(camelCase(['---_', '--', '', '-_- ']), '');
+	t.is(camelCase('foo bar?', {saveCapital: true}), 'fooBar?');
+	t.is(camelCase('foo bar!', {saveCapital: true}), 'fooBar!');
+	t.is(camelCase('foo bar$', {saveCapital: true}), 'fooBar$');
+	t.is(camelCase('foo-bar#', {saveCapital: true}), 'fooBar#');
+	t.is(camelCase('XMLHttpRequest', {saveCapital: true}), 'XMLHttpRequest');
+	t.is(camelCase('AjaxXMLHttpRequest', {saveCapital: true}), 'ajaxXMLHttpRequest');
+	t.is(camelCase('Ajax-XMLHttpRequest', {saveCapital: true}), 'ajaxXMLHttpRequest');
+	t.is(camelCase([]), '');
+	t.is(camelCase('mGridCol6@md', {saveCapital: true}), 'mGridCol6@md');
+	t.is(camelCase('A::a', {saveCapital: true}), 'a::a');
+	t.is(camelCase('Hello1World', {saveCapital: true}), 'hello1World');
+	t.is(camelCase('Hello11World', {saveCapital: true}), 'hello11World');
+	t.is(camelCase('hello1world', {saveCapital: true}), 'hello1World');
+	t.is(camelCase('Hello1World11foo', {saveCapital: true}), 'hello1World11Foo');
+	t.is(camelCase('Hello1', {saveCapital: true}), 'hello1');
+	t.is(camelCase('hello1', {saveCapital: true}), 'hello1');
+	t.is(camelCase('1Hello', {saveCapital: true}), '1Hello');
+	t.is(camelCase('1hello', {saveCapital: true}), '1Hello');
+	t.is(camelCase('h2w', {saveCapital: true}), 'h2W');
+	t.is(camelCase('label-name-SC', {saveCapital: true}), 'labelNameSC');
+});
+
+test('camelCase with pascalCase+saveCapital option', t => {
+	t.is(camelCase('Hello1', {saveCapital: true, pascalCase: true}), 'Hello1');
+	t.is(camelCase('FOO', {saveCapital: true, pascalCase: true}), 'FOO');
+	t.is(camelCase('label-name-SC', {saveCapital: true, pascalCase: true}), 'LabelNameSC');
+	t.is(camelCase('Ajax-XMLHttpRequest', {saveCapital: true, pascalCase: true}), 'AjaxXMLHttpRequest');
+	t.is(camelCase('Foo_BAR', {saveCapital: true, pascalCase: true}), 'FooBAR');
 });
 
 test('invalid input', t => {

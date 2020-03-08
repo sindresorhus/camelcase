@@ -63,8 +63,19 @@ const camelCase = (input, options) => {
 	}
 
 	input = input
-		.replace(/^[_.\- ]+/, '')
-		.toLowerCase()
+		.replace(/^[_.\- ]+/, '');
+
+	if (options.saveCapital) {
+		input = input
+			.replace(/^[A-Z](?![A-Z])/, m1 => m1.toLowerCase());
+	}
+
+	if (!options.saveCapital) {
+		input = input
+			.toLowerCase();
+	}
+
+	input = input
 		.replace(/[_.\- ]+(\w|$)/g, (_, p1) => p1.toUpperCase())
 		.replace(/\d+(\w|$)/g, m => m.toUpperCase());
 
