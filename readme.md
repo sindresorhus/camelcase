@@ -71,6 +71,14 @@ Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
 
+##### saveCapital
+
+Type: `boolean`<br>
+Default: `false`
+
+Save sequence capital chars: `foo-BAR` → `fooBAR`
+
+
 ## camelcase for enterprise
 
 Available as part of the Tidelift Subscription.

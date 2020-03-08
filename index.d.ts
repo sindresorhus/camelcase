@@ -6,6 +6,13 @@ declare namespace camelcase {
 		@default false
 		*/
 		readonly pascalCase?: boolean;
+
+		/**
+		Save sequence capital chars: `foo-BAR` → `fooBAR`
+
+		@default false
+		*/
+		readonly saveCapital?: boolean;
 	}
 }
 
