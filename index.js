@@ -8,21 +8,21 @@ const preserveCamelCase = string => {
 	for (let i = 0; i < string.length; i++) {
 		const character = string[i];
 
-		if (isLastCharLower && /[a-zA-Z]/.test(character) && character.toUpperCase() === character) {
+		if (isLastCharLower && /[\p{Lu}]/u.test(character)) {
 			string = string.slice(0, i) + '-' + string.slice(i);
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
 			i++;
-		} else if (isLastCharUpper && isLastLastCharUpper && /[a-zA-Z]/.test(character) && character.toLowerCase() === character) {
+		} else if (isLastCharUpper && isLastLastCharUpper && /[\p{Ll}]/u.test(character)) {
 			string = string.slice(0, i - 1) + '-' + string.slice(i - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
 			isLastCharLower = true;
 		} else {
-			isLastCharLower = character.toLowerCase() === character && character.toUpperCase() !== character;
+			isLastCharLower = character.toLocaleLowerCase() === character && character.toLocaleUpperCase() !== character;
 			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = character.toUpperCase() === character && character.toLowerCase() !== character;
+			isLastCharUpper = character.toLocaleUpperCase() === character && character.toLocaleLowerCase() !== character;
 		}
 	}
 
@@ -34,11 +34,12 @@ const camelCase = (input, options) => {
 		throw new TypeError('Expected the input to be `string | string[]`');
 	}
 
-	options = Object.assign({
-		pascalCase: false
-	}, options);
+	options = {
+		...{pascalCase: false},
+		...options
+	};
 
-	const postProcess = x => options.pascalCase ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase() + x.slice(1) : x;
 
 	if (Array.isArray(input)) {
 		input = input.map(x => x.trim())
@@ -53,10 +54,10 @@ const camelCase = (input, options) => {
 	}
 
 	if (input.length === 1) {
-		return options.pascalCase ? input.toUpperCase() : input.toLowerCase();
+		return options.pascalCase ? input.toLocaleUpperCase() : input.toLocaleLowerCase();
 	}
 
-	const hasUpperCase = input !== input.toLowerCase();
+	const hasUpperCase = input !== input.toLocaleLowerCase();
 
 	if (hasUpperCase) {
 		input = preserveCamelCase(input);
@@ -64,9 +65,9 @@ const camelCase = (input, options) => {
 
 	input = input
 		.replace(/^[_.\- ]+/, '')
-		.toLowerCase()
-		.replace(/[_.\- ]+(\w|$)/g, (_, p1) => p1.toUpperCase())
-		.replace(/\d+(\w|$)/g, m => m.toUpperCase());
+		.toLocaleLowerCase()
+		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase())
+		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase());
 
 	return postProcess(input);
 };

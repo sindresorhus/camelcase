@@ -58,6 +58,12 @@ test('camelCase', t => {
 	t.is(camelCase('1Hello'), '1Hello');
 	t.is(camelCase('1hello'), '1Hello');
 	t.is(camelCase('h2w'), 'h2W');
+	t.is(camelCase('розовый_пушистый-единороги'), 'розовыйПушистыйЕдинороги');
+	t.is(camelCase('розовый_пушистый-единороги'), 'розовыйПушистыйЕдинороги');
+	t.is(camelCase('РОЗОВЫЙ_ПУШИСТЫЙ-ЕДИНОРОГИ'), 'розовыйПушистыйЕдинороги');
+	t.is(camelCase('桑德在这里。'), '桑德在这里。');
+	t.is(camelCase('桑德在这里。'), '桑德在这里。');
+	t.is(camelCase('桑德_在这里。'), '桑德在这里。');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -117,6 +123,11 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('1hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('1Hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('h1W', {pascalCase: true}), 'H1W');
+	t.is(camelCase('РозовыйПушистыйЕдинороги', {pascalCase: true}), 'РозовыйПушистыйЕдинороги');
+	t.is(camelCase('розовый_пушистый-единороги', {pascalCase: true}), 'РозовыйПушистыйЕдинороги');
+	t.is(camelCase('РОЗОВЫЙ_ПУШИСТЫЙ-ЕДИНОРОГИ', {pascalCase: true}), 'РозовыйПушистыйЕдинороги');
+	t.is(camelCase('桑德在这里。', {pascalCase: true}), '桑德在这里。');
+	t.is(camelCase('桑德_在这里。', {pascalCase: true}), '桑德在这里。');
 });
 
 test('invalid input', t => {
