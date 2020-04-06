@@ -1,6 +1,6 @@
 # camelcase [![Build Status](https://travis-ci.org/sindresorhus/camelcase.svg?branch=master)](https://travis-ci.org/sindresorhus/camelcase)
 
-> Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`
+> Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`. Corectly handles Unicode.
 
 
 ## Install
@@ -21,11 +21,17 @@ camelCase('foo-bar');
 camelCase('foo_bar');
 //=> 'fooBar'
 
+camelCase('розовый_пушистый_единороги');
+//=> 'розовыйПушистыйЕдинороги'
+
 camelCase('Foo-Bar');
 //=> 'fooBar'
 
 camelCase('Foo-Bar', {pascalCase: true});
 //=> 'FooBar'
+
+camelCase('--foo.bar', {pascalCase: false});
+//=> 'fooBar'
 
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
@@ -43,6 +49,7 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
 ```
 
 
