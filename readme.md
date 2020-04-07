@@ -35,9 +35,6 @@ camelCase('Foo-Bar', {pascalCase: true});
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
-camelCase('--foo.bar', {pascalCase: false});
-//=> 'fooBar'
-
 camelCase('foo bar');
 //=> 'fooBar'
 
