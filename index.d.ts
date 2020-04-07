@@ -13,6 +13,8 @@ declare const camelcase: {
 	/**
 	Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`.
 
+	Correctly handles Unicode strings.
+
 	@param input - String to convert to camel case.
 
 	@example
@@ -27,6 +29,9 @@ declare const camelcase: {
 
 	camelCase('Foo-Bar');
 	//=> 'fooBar'
+	
+	camelCase('розовый_пушистый_единороги');
+	//=> 'розовыйПушистыйЕдинороги'
 
 	camelCase('Foo-Bar', {pascalCase: true});
 	//=> 'FooBar'

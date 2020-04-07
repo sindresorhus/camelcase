@@ -2,6 +2,8 @@
 
 > Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`
 
+Correctly handles Unicode strings.
+
 
 ## Install
 
@@ -23,6 +25,9 @@ camelCase('foo_bar');
 
 camelCase('Foo-Bar');
 //=> 'fooBar'
+
+camelCase('розовый_пушистый_единороги');
+//=> 'розовыйПушистыйЕдинороги'
 
 camelCase('Foo-Bar', {pascalCase: true});
 //=> 'FooBar'
