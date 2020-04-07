@@ -4,13 +4,11 @@
 
 Correctly handles Unicode strings.
 
-
 ## Install
 
 ```
 $ npm install camelcase
 ```
-
 
 ## Usage
 
@@ -50,35 +48,32 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
 ```
 
-
 ## API
 
-### camelCase(input, [options])
+### camelCase(input, options?)
 
 #### input
 
-Type: `string` `string[]`
+Type: `string | string[]`
 
 String to convert to camel case.
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### pascalCase
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
-
 
 ## camelcase for enterprise
 
 Available as part of the Tidelift Subscription.
 
 The maintainers of camelcase and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-camelcase?utm_source=npm-camelcase&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
-
 
 ## Related
 
