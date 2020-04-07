@@ -2,7 +2,7 @@
 
 > Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`
 
-Corectly handles Unicode.
+Correctly handles Unicode strings.
 
 
 ## Install
