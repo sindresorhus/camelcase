@@ -8,7 +8,7 @@ declare namespace camelcase {
 		readonly pascalCase?: boolean;
 
 		/**
-		Save sequence capital chars: `foo-BAR` → `fooBAR`
+		Preserve consecutive uppercase characters: `foo-BAR` → `fooBAR`
 
 		@default false
 		*/
@@ -23,9 +23,11 @@ Correctly handles Unicode strings.
 
 @param input - String to convert to camel case.
 
-@example
-```
-import camelCase = require('camelcase');
+	camelCase('foo bar');
+	//=> 'fooBar'
+
+	camelCase('foo-bar');
+	//=> 'fooBar'
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -39,8 +41,11 @@ camelCase('Foo-Bar');
 camelCase('розовый_пушистый_единороги');
 //=> 'розовыйПушистыйЕдинороги'
 
-camelCase('Foo-Bar', {pascalCase: true});
-//=> 'FooBar'
+	camelCase('foo-baz-BAR', {preserveConsecutiveUppercase: true});
+	//=> 'fooBazBAR'
+
+	camelCase('AjaxXMLHttpRequest', {preserveConsecutiveUppercase: true});
+	//=> 'ajaxXMLHttpRequest'
 
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
