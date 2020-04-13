@@ -29,6 +29,10 @@ const preserveCamelCase = string => {
 	return string;
 };
 
+const handlePascalCase = input => (
+	input.charAt(0).toLocaleUpperCase() + input.slice(1)
+);
+
 const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
@@ -38,8 +42,6 @@ const camelCase = (input, options) => {
 		...{pascalCase: false},
 		...options
 	};
-
-	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase() + x.slice(1) : x;
 
 	if (Array.isArray(input)) {
 		input = input.map(x => x.trim())
@@ -77,10 +79,14 @@ const camelCase = (input, options) => {
 	}
 
 	input = input
-		.replace(/[_.\- ]+(\w|$)/g, (_, p1) => p1.toUpperCase())
-		.replace(/\d+(\w|$)/g, m => m.toUpperCase());
+		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase())
+		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase());
 
-	return postProcess(input);
+	if (options.pascalCase) {
+		input = handlePascalCase(input);
+	}
+
+	return input;
 };
 
 module.exports = camelCase;
