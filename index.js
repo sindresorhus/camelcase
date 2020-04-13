@@ -34,7 +34,7 @@ const handlePascalCase = input => (
 );
 
 const handlePreserveConsecutiveUppercase = input => (
-	input.replace(/^[A-Z](?![A-Z])/, m1 => m1.toLowerCase())
+	input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase())
 );
 
 const camelCase = (input, options) => {
