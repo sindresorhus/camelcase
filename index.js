@@ -33,6 +33,10 @@ const handlePascalCase = input => (
 	input.charAt(0).toLocaleUpperCase() + input.slice(1)
 );
 
+const handlePreserveConsecutiveUppercase = input => (
+	input.replace(/^[A-Z](?![A-Z])/, m1 => m1.toLowerCase())
+);
+
 const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
@@ -69,11 +73,8 @@ const camelCase = (input, options) => {
 		.replace(/^[_.\- ]+/, '');
 
 	if (options.preserveConsecutiveUppercase) {
-		input = input
-			.replace(/^[A-Z](?![A-Z])/, m1 => m1.toLowerCase());
-	}
-
-	if (!options.preserveConsecutiveUppercase) {
+		input = handlePreserveConsecutiveUppercase(input);
+	} else {
 		input = input
 			.toLowerCase();
 	}
