@@ -34,7 +34,7 @@ const handlePascalCase = input => (
 );
 
 const handlePreserveConsecutiveUppercase = input => (
-	input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase())
+	input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLocaleLowerCase())
 );
 
 const camelCase = (input, options) => {
@@ -72,7 +72,7 @@ const camelCase = (input, options) => {
 	input = input
 		.replace(/^[_.\- ]+/, '');
 
-	input = options.preserveConsecutiveUppercase ? handlePreserveConsecutiveUppercase(input) : input.toLowerCase();
+	input = options.preserveConsecutiveUppercase ? handlePreserveConsecutiveUppercase(input) : input.toLocaleLowerCase();
 
 	input = input
 		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase())
