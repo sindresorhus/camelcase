@@ -72,12 +72,7 @@ const camelCase = (input, options) => {
 	input = input
 		.replace(/^[_.\- ]+/, '');
 
-	if (options.preserveConsecutiveUppercase) {
-		input = handlePreserveConsecutiveUppercase(input);
-	} else {
-		input = input
-			.toLowerCase();
-	}
+	input = options.preserveConsecutiveUppercase ? handlePreserveConsecutiveUppercase(input) : input.toLowerCase();
 
 	input = input
 		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase())
