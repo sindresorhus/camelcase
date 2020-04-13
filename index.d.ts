@@ -23,11 +23,11 @@ Correctly handles Unicode strings.
 
 @param input - String to convert to camel case.
 
-	camelCase('foo bar');
-	//=> 'fooBar'
+camelCase('foo bar');
+//=> 'fooBar'
 
-	camelCase('foo-bar');
-	//=> 'fooBar'
+camelCase('foo-bar');
+//=> 'fooBar'
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -41,11 +41,11 @@ camelCase('Foo-Bar');
 camelCase('розовый_пушистый_единороги');
 //=> 'розовыйПушистыйЕдинороги'
 
-	camelCase('foo-baz-BAR', {preserveConsecutiveUppercase: true});
-	//=> 'fooBazBAR'
+camelCase('foo-baz-BAR', {preserveConsecutiveUppercase: true});
+//=> 'fooBazBAR'
 
-	camelCase('AjaxXMLHttpRequest', {preserveConsecutiveUppercase: true});
-	//=> 'ajaxXMLHttpRequest'
+camelCase('AjaxXMLHttpRequest', {preserveConsecutiveUppercase: true});
+//=> 'ajaxXMLHttpRequest'
 
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
