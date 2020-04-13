@@ -5,6 +5,15 @@ test('camelCase', t => {
 	t.is(camelCase('foo'), 'foo');
 	t.is(camelCase('foo-bar'), 'fooBar');
 	t.is(camelCase('foo-bar-baz'), 'fooBarBaz');
+	t.is(camelCase('foo-bar-BAZ'), 'fooBarBaz');
+	t.is(camelCase('foo-baR'), 'fooBaR');
+	t.is(camelCase('foo-BaR'), 'fooBaR');
+	t.is(camelCase('foo-Bar'), 'fooBar');
+	t.is(camelCase('foo-BAr'), 'fooBAr');
+	t.is(camelCase('foo-B'), 'fooB');
+	t.is(camelCase('foo-2-BAR'), 'foo2Bar');
+	t.is(camelCase('foo-2BAR'), 'foo2Bar');
+	t.is(camelCase('foo-BAR2'), 'fooBar2');
 	t.is(camelCase('foo--bar'), 'fooBar');
 	t.is(camelCase('--foo-bar'), 'fooBar');
 	t.is(camelCase('--foo--bar'), 'fooBar');
@@ -58,13 +67,21 @@ test('camelCase', t => {
 	t.is(camelCase('1Hello'), '1Hello');
 	t.is(camelCase('1hello'), '1Hello');
 	t.is(camelCase('h2w'), 'h2W');
-	t.is(camelCase('label-name-SC'), 'LabelNameSc');
 });
 
 test('camelCase with pascalCase option', t => {
 	t.is(camelCase('foo', {pascalCase: true}), 'Foo');
 	t.is(camelCase('foo-bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('foo-bar-baz', {pascalCase: true}), 'FooBarBaz');
+	t.is(camelCase('foo-bar-BAZ', {pascalCase: true}), 'FooBarBaz');
+	t.is(camelCase('foo-baR', {pascalCase: true}), 'FooBaR');
+	t.is(camelCase('foo-BaR', {pascalCase: true}), 'FooBaR');
+	t.is(camelCase('foo-Bar', {pascalCase: true}), 'FooBar');
+	t.is(camelCase('foo-BAr', {pascalCase: true}), 'FooBAr');
+	t.is(camelCase('foo-B', {pascalCase: true}), 'FooB');
+	t.is(camelCase('foo-2-BAR', {pascalCase: true}), 'Foo2Bar');
+	t.is(camelCase('foo-2BAR', {pascalCase: true}), 'Foo2Bar');
+	t.is(camelCase('foo-BAR2', {pascalCase: true}), 'FooBar2');
 	t.is(camelCase('foo--bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('--foo-bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('--foo--bar', {pascalCase: true}), 'FooBar');
@@ -118,13 +135,21 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('1hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('1Hello', {pascalCase: true}), '1Hello');
 	t.is(camelCase('h1W', {pascalCase: true}), 'H1W');
-	t.is(camelCase('label-name-SC', {pascalCase: true}), 'LabelNameSc');
 });
 
 test('camelCase with preserveConsecutiveUppercase option', t => {
 	t.is(camelCase('foo', {preserveConsecutiveUppercase: true}), 'foo');
 	t.is(camelCase('foo-bar', {preserveConsecutiveUppercase: true}), 'fooBar');
 	t.is(camelCase('foo-bar-baz', {preserveConsecutiveUppercase: true}), 'fooBarBaz');
+	t.is(camelCase('foo-bar-BAZ', {preserveConsecutiveUppercase: true}), 'fooBarBAZ');
+	t.is(camelCase('foo-baR', {preserveConsecutiveUppercase: true}), 'fooBaR');
+	t.is(camelCase('foo-BaR', {preserveConsecutiveUppercase: true}), 'fooBaR');
+	t.is(camelCase('foo-Bar', {preserveConsecutiveUppercase: true}), 'fooBar');
+	t.is(camelCase('foo-BAr', {preserveConsecutiveUppercase: true}), 'fooBAr');
+	t.is(camelCase('foo-B', {preserveConsecutiveUppercase: true}), 'fooB');
+	t.is(camelCase('foo-2-BAR', {preserveConsecutiveUppercase: true}), 'foo2BAR');
+	t.is(camelCase('foo-2BAR', {preserveConsecutiveUppercase: true}), 'foo2BAR');
+	t.is(camelCase('foo-BAR2', {preserveConsecutiveUppercase: true}), 'fooBAR2');
 	t.is(camelCase('foo--bar', {preserveConsecutiveUppercase: true}), 'fooBar');
 	t.is(camelCase('--foo-bar', {preserveConsecutiveUppercase: true}), 'fooBar');
 	t.is(camelCase('--foo--bar', {preserveConsecutiveUppercase: true}), 'fooBar');
@@ -178,15 +203,66 @@ test('camelCase with preserveConsecutiveUppercase option', t => {
 	t.is(camelCase('1Hello', {preserveConsecutiveUppercase: true}), '1Hello');
 	t.is(camelCase('1hello', {preserveConsecutiveUppercase: true}), '1Hello');
 	t.is(camelCase('h2w', {preserveConsecutiveUppercase: true}), 'h2W');
-	t.is(camelCase('label-name-SC', {preserveConsecutiveUppercase: true}), 'labelNameSC');
 });
 
-test('camelCase with pascalCase+preserveConsecutiveUppercase option', t => {
-	t.is(camelCase('Hello1', {preserveConsecutiveUppercase: true, pascalCase: true}), 'Hello1');
-	t.is(camelCase('FOO', {preserveConsecutiveUppercase: true, pascalCase: true}), 'FOO');
-	t.is(camelCase('label-name-SC', {preserveConsecutiveUppercase: true, pascalCase: true}), 'LabelNameSC');
-	t.is(camelCase('Ajax-XMLHttpRequest', {preserveConsecutiveUppercase: true, pascalCase: true}), 'AjaxXMLHttpRequest');
-	t.is(camelCase('Foo_BAR', {preserveConsecutiveUppercase: true, pascalCase: true}), 'FooBAR');
+test('camelCase with pascalCase and preserveConsecutiveUppercase option', t => {
+	t.is(camelCase('foo', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Foo');
+	t.is(camelCase('foo-bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('foo-bar-baz', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBarBaz');
+	t.is(camelCase('foo-bar-BAZ', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBarBAZ');
+	t.is(camelCase('foo--bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('--foo-bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('--foo--bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('FOO-BAR', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FOOBAR');
+	t.is(camelCase('FOÈ-BAR', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FOÈBAR');
+	t.is(camelCase('-foo-bar-', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('--foo--bar--', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('foo.bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('foo..bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('..foo..bar..', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('foo_bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('__foo__bar__', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('__foo__bar__', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('foo bar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('  foo  bar  ', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('-', {pascalCase: true, preserveConsecutiveUppercase: true}), '-');
+	t.is(camelCase(' - ', {pascalCase: true, preserveConsecutiveUppercase: true}), '-');
+	t.is(camelCase('fooBar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('fooBar-baz', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBarBaz');
+	t.is(camelCase('foìBar-baz', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FoìBarBaz');
+	t.is(camelCase('fooBarBaz-bazzy', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBarBazBazzy');
+	t.is(camelCase('FBBazzy', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FBBazzy');
+	t.is(camelCase('F', {pascalCase: true, preserveConsecutiveUppercase: true}), 'F');
+	t.is(camelCase('FooBar', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase('Foo', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Foo');
+	t.is(camelCase('FOO', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FOO');
+	t.is(camelCase(['foo', 'bar'], {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase(['foo', '-bar'], {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar');
+	t.is(camelCase(['foo', '-bar', 'baz'], {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBarBaz');
+	t.is(camelCase(['', ''], {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase('--', {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase('', {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase('--__--_--_', {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase(['---_', '--', '', '-_- '], {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase('foo bar?', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar?');
+	t.is(camelCase('foo bar!', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar!');
+	t.is(camelCase('foo bar$', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar$');
+	t.is(camelCase('foo-bar#', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBar#');
+	t.is(camelCase('XMLHttpRequest', {pascalCase: true, preserveConsecutiveUppercase: true}), 'XMLHttpRequest');
+	t.is(camelCase('AjaxXMLHttpRequest', {pascalCase: true, preserveConsecutiveUppercase: true}), 'AjaxXMLHttpRequest');
+	t.is(camelCase('Ajax-XMLHttpRequest', {pascalCase: true, preserveConsecutiveUppercase: true}), 'AjaxXMLHttpRequest');
+	t.is(camelCase([], {pascalCase: true, preserveConsecutiveUppercase: true}), '');
+	t.is(camelCase('mGridCol6@md', {pascalCase: true, preserveConsecutiveUppercase: true}), 'MGridCol6@md');
+	t.is(camelCase('A::a', {pascalCase: true, preserveConsecutiveUppercase: true}), 'A::a');
+	t.is(camelCase('Hello1World', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello1World');
+	t.is(camelCase('Hello11World', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello11World');
+	t.is(camelCase('hello1world', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello1World');
+	t.is(camelCase('hello1World', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello1World');
+	t.is(camelCase('hello1', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello1');
+	t.is(camelCase('Hello1', {pascalCase: true, preserveConsecutiveUppercase: true}), 'Hello1');
+	t.is(camelCase('1hello', {pascalCase: true, preserveConsecutiveUppercase: true}), '1Hello');
+	t.is(camelCase('1Hello', {pascalCase: true, preserveConsecutiveUppercase: true}), '1Hello');
+	t.is(camelCase('h1W', {pascalCase: true, preserveConsecutiveUppercase: true}), 'H1W');
 });
 
 test('invalid input', t => {
