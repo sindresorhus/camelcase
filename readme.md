@@ -71,7 +71,7 @@ Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
 
-##### saveCapital
+##### preserveConsecutiveUppercase
 
 Type: `boolean`<br>
 Default: `false`

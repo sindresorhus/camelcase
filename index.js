@@ -66,12 +66,12 @@ const camelCase = (input, options) => {
 	input = input
 		.replace(/^[_.\- ]+/, '');
 
-	if (options.saveCapital) {
+	if (options.preserveConsecutiveUppercase) {
 		input = input
 			.replace(/^[A-Z](?![A-Z])/, m1 => m1.toLowerCase());
 	}
 
-	if (!options.saveCapital) {
+	if (!options.preserveConsecutiveUppercase) {
 		input = input
 			.toLowerCase();
 	}

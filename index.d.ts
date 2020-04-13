@@ -12,7 +12,7 @@ declare namespace camelcase {
 
 		@default false
 		*/
-		readonly saveCapital?: boolean;
+		readonly preserveConsecutiveUppercase?: boolean;
 	}
 }
 
