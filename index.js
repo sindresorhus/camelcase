@@ -43,7 +43,7 @@ const camelCase = (input, options) => {
 	}
 
 	options = {
-		...{pascalCase: false},
+		...{pascalCase: false, preserveConsecutiveUppercase: false},
 		...options
 	};
 
