@@ -29,9 +29,6 @@ camelCase('foo bar');
 camelCase('foo-bar');
 //=> 'fooBar'
 
-camelCase('foo-bar');
-//=> 'fooBar'
-
 camelCase('foo_bar');
 //=> 'fooBar'
 
@@ -48,9 +45,6 @@ camelCase('AjaxXMLHttpRequest', {preserveConsecutiveUppercase: true});
 //=> 'ajaxXMLHttpRequest'
 
 camelCase('--foo.bar', {pascalCase: false});
-//=> 'fooBar'
-
-camelCase('foo bar');
 //=> 'fooBar'
 
 console.log(process.argv[3]);
