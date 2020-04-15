@@ -83,3 +83,4 @@ The maintainers of camelcase and thousands of other packages are working with Ti
 - [uppercamelcase](https://github.com/SamVerschueren/uppercamelcase) - Like this module, but to PascalCase instead of camelCase
 - [titleize](https://github.com/sindresorhus/titleize) - Capitalize every word in string
 - [humanize-string](https://github.com/sindresorhus/humanize-string) - Convert a camelized/dasherized/underscored string into a humanized one
+- [camelcase-keys](https://github.com/sindresorhus/camelcase-keys) - Convert object keys to camel case
