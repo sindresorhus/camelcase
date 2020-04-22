@@ -73,11 +73,10 @@ Uppercase the first character: `foo-bar` → `FooBar`
 
 ##### preserveConsecutiveUppercase
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Save sequence capital chars: `foo-BAR` → `fooBAR`
-
 
 ## camelcase for enterprise
 
