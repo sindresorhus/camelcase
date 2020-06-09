@@ -35,8 +35,8 @@ const camelCase = (input, options) => {
 	}
 
 	options = {
-		...{pascalCase: false},
-		...options
+		{pascalCase: false},
+		options
 	};
 
 	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase() + x.slice(1) : x;
