@@ -48,6 +48,12 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
+camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum', {locale: 'tr-TR'});
+//=> 'loremİpsum'
 ```
 
 ## API
@@ -70,6 +76,13 @@ Type: `boolean`\
 Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
+
+##### locale
+
+Type: `string | string[]`\
+Default: `undefined`
+
+Locale to be used with lowercase or uppercase conversions.
 
 ## camelcase for enterprise
 
