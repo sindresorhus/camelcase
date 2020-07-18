@@ -1,6 +1,6 @@
 'use strict';
 
-const preserveCamelCase = string => {
+const preserveCamelCase = (string, locale) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
@@ -20,9 +20,9 @@ const preserveCamelCase = string => {
 			isLastCharUpper = false;
 			isLastCharLower = true;
 		} else {
-			isLastCharLower = character.toLocaleLowerCase() === character && character.toLocaleUpperCase() !== character;
+			isLastCharLower = character.toLocaleLowerCase(locale) === character && character.toLocaleUpperCase(locale) !== character;
 			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = character.toLocaleUpperCase() === character && character.toLocaleLowerCase() !== character;
+			isLastCharUpper = character.toLocaleUpperCase(locale) === character && character.toLocaleLowerCase(locale) !== character;
 		}
 	}
 
@@ -35,11 +35,11 @@ const camelCase = (input, options) => {
 	}
 
 	options = {
-		...{pascalCase: false},
+		...{pascalCase: false, locale: null},
 		...options
 	};
-
-	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase() + x.slice(1) : x;
+	const locale = (typeof options.locale === 'string') ? options.locale : undefined;
+	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase(locale) + x.slice(1) : x;
 
 	if (Array.isArray(input)) {
 		input = input.map(x => x.trim())
@@ -54,10 +54,10 @@ const camelCase = (input, options) => {
 	}
 
 	if (input.length === 1) {
-		return options.pascalCase ? input.toLocaleUpperCase() : input.toLocaleLowerCase();
+		return options.pascalCase ? input.toLocaleUpperCase(locale) : input.toLocaleLowerCase(locale);
 	}
 
-	const hasUpperCase = input !== input.toLocaleLowerCase();
+	const hasUpperCase = input !== input.toLocaleLowerCase(locale);
 
 	if (hasUpperCase) {
 		input = preserveCamelCase(input);
@@ -65,9 +65,9 @@ const camelCase = (input, options) => {
 
 	input = input
 		.replace(/^[_.\- ]+/, '')
-		.toLocaleLowerCase()
-		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase())
-		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase());
+		.toLocaleLowerCase(locale)
+		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(locale))
+		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(locale));
 
 	return postProcess(input);
 };
