@@ -64,10 +64,10 @@ test('camelCase', t => {
 	t.is(camelCase('桑德在这里。'), '桑德在这里。');
 	t.is(camelCase('桑德在这里。'), '桑德在这里。');
 	t.is(camelCase('桑德_在这里。'), '桑德在这里。');
-	t.is(camelCase('lorem-ipsum', {locales: 'tr-TR'}), 'loremİpsum');
-	t.is(camelCase('lorem-ipsum', {locales: 'en-EN'}), 'loremIpsum');
-	t.is(camelCase('lorem-ipsum', {locales: ['tr', 'TR', 'tr-TR']}), 'loremİpsum');
-	t.is(camelCase('lorem-ipsum', {locales: ['en-EN', 'en-GB']}), 'loremIpsum');
+	t.is(camelCase('lorem-ipsum', {locale: 'tr-TR'}), 'loremİpsum');
+	t.is(camelCase('lorem-ipsum', {locale: 'en-EN'}), 'loremIpsum');
+	t.is(camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']}), 'loremİpsum');
+	t.is(camelCase('lorem-ipsum', {locale: ['en-EN', 'en-GB']}), 'loremIpsum');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -132,10 +132,10 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('РОЗОВЫЙ_ПУШИСТЫЙ-ЕДИНОРОГИ', {pascalCase: true}), 'РозовыйПушистыйЕдинороги');
 	t.is(camelCase('桑德在这里。', {pascalCase: true}), '桑德在这里。');
 	t.is(camelCase('桑德_在这里。', {pascalCase: true}), '桑德在这里。');
-	t.is(camelCase('lorem-ipsum', {pascalCase: true, locales: 'tr-TR'}), 'Loremİpsum');
-	t.is(camelCase('lorem-ipsum', {pascalCase: true, locales: 'en-EN'}), 'LoremIpsum');
-	t.is(camelCase('lorem-ipsum', {pascalCase: true, locales: ['tr', 'TR', 'tr-TR']}), 'Loremİpsum');
-	t.is(camelCase('lorem-ipsum', {pascalCase: true, locales: ['en-EN', 'en-GB']}), 'LoremIpsum');
+	t.is(camelCase('lorem-ipsum', {pascalCase: true, locale: 'tr-TR'}), 'Loremİpsum');
+	t.is(camelCase('lorem-ipsum', {pascalCase: true, locale: 'en-EN'}), 'LoremIpsum');
+	t.is(camelCase('lorem-ipsum', {pascalCase: true, locale: ['tr', 'TR', 'tr-TR']}), 'Loremİpsum');
+	t.is(camelCase('lorem-ipsum', {pascalCase: true, locale: ['en-EN', 'en-GB']}), 'LoremIpsum');
 });
 
 test('invalid input', t => {
