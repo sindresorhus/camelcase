@@ -6,6 +6,12 @@ declare namespace camelcase {
 		@default false
 		*/
 		readonly pascalCase?: boolean;
+
+		/**
+		Convert characters with given locale(s). See String.prototype.toLocaleLowerCase().
+		@default undefined. Uses host's current locale when not provided.
+		 */
+		readonly locale?: string | string[];
 	}
 }
 
@@ -51,6 +57,19 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
+camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum', {locale: 'tr-TR'});
+//=> 'loremİpsum'
+
+camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB]});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
+//=> 'loremİpsum'
+
 ```
 */
 declare function camelcase(
