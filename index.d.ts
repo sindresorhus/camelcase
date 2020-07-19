@@ -9,9 +9,10 @@ declare namespace camelcase {
 
 		/**
 		Convert characters with given locale(s). See String.prototype.toLocaleLowerCase().
+
 		@default undefined. Uses host's current locale when not provided.
-		 */
-		readonly locale?: string | string[];
+		*/
+		readonly locale?: string | readonly string[];
 	}
 }
 
@@ -69,7 +70,6 @@ camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB]});
 
 camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
 //=> 'loremİpsum'
-
 ```
 */
 declare function camelcase(
