@@ -61,15 +61,6 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 
 camelCase('lorem-ipsum', {locale: 'en-US'});
 //=> 'loremIpsum'
-
-camelCase('lorem-ipsum', {locale: 'tr-TR'});
-//=> 'loremİpsum'
-
-camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB]});
-//=> 'loremIpsum'
-
-camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
-//=> 'loremİpsum'
 ```
 */
 declare function camelcase(
