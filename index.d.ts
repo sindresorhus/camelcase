@@ -7,7 +7,7 @@ declare namespace camelcase {
 		*/
 		readonly pascalCase?: boolean;
 
-		/**		
+		/**
 		From `String.prototype.toLocaleUpperCase()`: The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an Array, the best available locale is used. The default locale is the host environment’s current locale.
 
 		@default The host environment’s current locale
