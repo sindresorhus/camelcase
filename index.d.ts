@@ -9,7 +9,7 @@ declare namespace camelcase {
 
 		/**
 		The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an Array, the best available locale is used.
-		
+
 		Default: The host environment’s current locale
 
 		@example
