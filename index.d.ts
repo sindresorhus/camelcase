@@ -9,8 +9,23 @@ declare namespace camelcase {
 
 		/**
 		The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an Array, the best available locale is used.
+		
+		Default: The host environment’s current locale
 
-		@default The host environment’s current locale
+		@example
+		```js
+		camelCase('lorem-ipsum', {locale: 'en-US'});
+		//=> 'loremIpsum'
+
+		camelCase('lorem-ipsum', {locale: 'tr-TR'});
+		//=> 'loremİpsum'
+
+		camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB']});
+		//=> 'loremIpsum'
+
+		camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
+		//=> 'loremİpsum'
+		```
 		*/
 		readonly locale?: string | readonly string[];
 	}
