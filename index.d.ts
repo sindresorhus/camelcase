@@ -6,6 +6,13 @@ declare namespace camelcase {
 		@default false
 		*/
 		readonly pascalCase?: boolean;
+
+		/**
+		Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
+
+		@default false
+		*/
+		readonly preserveConsecutiveUppercase?: boolean;
 	}
 }
 
@@ -18,7 +25,7 @@ Correctly handles Unicode strings.
 
 @example
 ```
-import camelCase = require('camelcase');
+const camelCase = require('camelcase');
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -38,6 +45,12 @@ camelCase('Foo-Bar', {pascalCase: true});
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
+camelCase('Foo-Bar', {preserveConsecutiveUppercase: true});
+//=> 'FooBAR'
+
+camelCase('fooBaR', {pascalCase: true, preserveConsecutiveUppercase: true}));
+//=> 'FooBaR'
+
 camelCase('foo bar');
 //=> 'fooBar'
 
@@ -51,6 +64,9 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
+camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
+//=> 'FooBAR'
 ```
 */
 declare function camelcase(
