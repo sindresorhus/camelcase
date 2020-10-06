@@ -25,7 +25,7 @@ Correctly handles Unicode strings.
 
 @example
 ```
-const camelCase = require('camelcase');
+import camelCase = require('camelcase');
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -48,8 +48,8 @@ camelCase('--foo.bar', {pascalCase: false});
 camelCase('Foo-Bar', {preserveConsecutiveUppercase: true});
 //=> 'fooBAR'
 
-camelCase('fooBaR', {pascalCase: true, preserveConsecutiveUppercase: true}));
-//=> 'FooBaR'
+camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}));
+//=> 'FooBAR'
 
 camelCase('foo bar');
 //=> 'fooBar'
