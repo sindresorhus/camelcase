@@ -132,6 +132,7 @@ test('camelCase with pascalCase option', t => {
 
 test('camelCase with preserveConsecutiveUppercase option', t => {
 	t.is(camelCase('foo-BAR', {preserveConsecutiveUppercase: true}), 'fooBAR');
+	t.is(camelCase('Foo-BAR', {preserveConsecutiveUppercase: true}), 'fooBAR');
 	t.is(camelCase('fooBAR', {preserveConsecutiveUppercase: true}), 'fooBAR');
 	t.is(camelCase('fooBaR', {preserveConsecutiveUppercase: true}), 'fooBaR');
 	t.is(camelCase('FOÈ-BAR', {preserveConsecutiveUppercase: true}), 'FOÈBAR');
