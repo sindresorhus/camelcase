@@ -8,12 +8,14 @@ declare namespace camelcase {
 		readonly pascalCase?: boolean;
 
 		/**
-		The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an Array, the best available locale is used.
+		The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
 
 		Default: The host environment’s current locale
 
 		@example
-		```js
+		```
+		import camelCase = require('camelcase');
+
 		camelCase('lorem-ipsum', {locale: 'en-US'});
 		//=> 'loremIpsum'
 
