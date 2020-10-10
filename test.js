@@ -130,6 +130,17 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('桑德_在这里。', {pascalCase: true}), '桑德在这里。');
 });
 
+test('camelCase with locale option', t => {
+	t.is(camelCase('lorem-ipsum', {locale: 'tr-TR'}), 'loremİpsum');
+	t.is(camelCase('lorem-ipsum', {locale: 'en-EN'}), 'loremIpsum');
+	t.is(camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']}), 'loremİpsum');
+	t.is(camelCase('lorem-ipsum', {locale: ['en-EN', 'en-GB']}), 'loremIpsum');
+	t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: 'tr-TR'}), 'İpsumDolor');
+	t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: 'en-EN'}), 'IpsumDolor');
+	t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: ['tr', 'TR', 'tr-TR']}), 'İpsumDolor');
+	t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: ['en-EN', 'en-GB']}), 'IpsumDolor');
+});
+
 test('invalid input', t => {
 	t.throws(() => {
 		camelCase(1);

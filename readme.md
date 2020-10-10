@@ -48,6 +48,9 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
+camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
 ```
 
 ## API
@@ -70,6 +73,29 @@ Type: `boolean`\
 Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
+
+##### locale
+
+Type: `string | string[]`\
+Default: The host environment’s current locale.
+
+The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
+
+```js
+const camelCase = require('camelcase');
+
+camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum', {locale: 'tr-TR'});
+//=> 'loremİpsum'
+
+camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB']});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
+//=> 'loremİpsum'
+```
 
 ## camelcase for enterprise
 
