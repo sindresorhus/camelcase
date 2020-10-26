@@ -13,6 +13,24 @@ declare namespace camelcase {
 		@default false
 		*/
 		readonly preserveConsecutiveUppercase?: boolean;
+
+		/**
+		The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
+		Default: The host environment’s current locale.
+		@example
+		```
+		import camelCase = require('camelcase');
+		camelCase('lorem-ipsum', {locale: 'en-US'});
+		//=> 'loremIpsum'
+		camelCase('lorem-ipsum', {locale: 'tr-TR'});
+		//=> 'loremİpsum'
+		camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB']});
+		//=> 'loremIpsum'
+		camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
+		//=> 'loremİpsum'
+		```
+		*/
+		readonly locale?: string | readonly string[];
 	}
 }
 
@@ -67,6 +85,9 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 
 camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
 //=> 'FooBAR'
+
+camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
 ```
 */
 declare function camelcase(
