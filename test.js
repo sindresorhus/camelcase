@@ -161,7 +161,7 @@ test('camelCase with preserveConsecutiveUppercase option', t => {
 	t.is(camelCase('桑德_在这里。', {preserveConsecutiveUppercase: true}), '桑德在这里。');
 });
 
-test('camelCase with both -pascalCase and -preserveConsecutiveUppercase option', t => {
+test('camelCase with both pascalCase and preserveConsecutiveUppercase option', t => {
 	t.is(camelCase('foo-BAR', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBAR');
 	t.is(camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBAR');
 	t.is(camelCase('fooBaR', {pascalCase: true, preserveConsecutiveUppercase: true}), 'FooBaR');
