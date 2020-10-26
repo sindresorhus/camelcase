@@ -85,7 +85,7 @@ Uppercase the first character: `foo-bar` → `FooBar`
 Type: `boolean`\
 Default: `false`
 
-Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`
+Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
 ## camelcase for enterprise
 
