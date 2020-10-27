@@ -22,6 +22,7 @@ declare namespace camelcase {
 		@example
 		```
 		import camelCase = require('camelcase');
+
 		camelCase('lorem-ipsum', {locale: 'en-US'});
 		//=> 'loremIpsum'
 		camelCase('lorem-ipsum', {locale: 'tr-TR'});

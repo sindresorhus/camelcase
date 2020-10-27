@@ -35,7 +35,7 @@ camelCase('Foo-Bar', {pascalCase: true});
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
-camelCase('Foo-Bar', {preserveConsecutiveUppercase: true});
+camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
 //=> 'fooBAR'
 
 camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}));
