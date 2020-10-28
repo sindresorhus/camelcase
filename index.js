@@ -29,17 +29,25 @@ const preserveCamelCase = (string, locale) => {
 	return string;
 };
 
+const preserveConsecutiveUppercase = input => {
+	return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
+};
+
+const postProcess = (input, options) => {
+	return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
+		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
+};
+
 const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
 	}
 
 	options = {
-		...{pascalCase: false},
+		pascalCase: false,
+		preserveConsecutiveUppercase: false,
 		...options
 	};
-
-	const postProcess = x => options.pascalCase ? x.charAt(0).toLocaleUpperCase(options.locale) + x.slice(1) : x;
 
 	if (Array.isArray(input)) {
 		input = input.map(x => x.trim())
@@ -63,13 +71,19 @@ const camelCase = (input, options) => {
 		input = preserveCamelCase(input, options.locale);
 	}
 
-	input = input
-		.replace(/^[_.\- ]+/, '')
-		.toLocaleLowerCase(options.locale)
-		.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
-		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
+	input = input.replace(/^[_.\- ]+/, '');
 
-	return postProcess(input);
+	if (options.preserveConsecutiveUppercase) {
+		input = preserveConsecutiveUppercase(input);
+	} else {
+		input = input.toLocaleLowerCase();
+	}
+
+	if (options.pascalCase) {
+		input = input.charAt(0).toLocaleUpperCase(options.locale) + input.slice(1);
+	}
+
+	return postProcess(input, options);
 };
 
 module.exports = camelCase;

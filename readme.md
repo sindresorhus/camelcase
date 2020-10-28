@@ -35,6 +35,12 @@ camelCase('Foo-Bar', {pascalCase: true});
 camelCase('--foo.bar', {pascalCase: false});
 //=> 'fooBar'
 
+camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
+//=> 'fooBAR'
+
+camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}));
+//=> 'FooBAR'
+
 camelCase('foo bar');
 //=> 'fooBar'
 
@@ -48,6 +54,9 @@ camelCase(['foo', 'bar']);
 
 camelCase(['__foo__', '--bar'], {pascalCase: true});
 //=> 'FooBar'
+
+camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
+//=> 'FooBAR'
 
 camelCase('lorem-ipsum', {locale: 'en-US'});
 //=> 'loremIpsum'
@@ -73,6 +82,13 @@ Type: `boolean`\
 Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
+
+##### preserveConsecutiveUppercase
+
+Type: `boolean`\
+Default: `false`
+
+Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
 ##### locale
 
