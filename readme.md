@@ -1,4 +1,4 @@
-# camelcase [![Build Status](https://travis-ci.com/sindresorhus/camelcase.svg?branch=master)](https://travis-ci.com/sindresorhus/camelcase)
+# camelcase
 
 > Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`
 
