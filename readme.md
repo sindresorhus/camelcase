@@ -10,7 +10,7 @@ Correctly handles Unicode strings.
 $ npm install camelcase
 ```
 
-*If you need to support Firefox, stay on version 5 as version 6 uses regex features not available in Firefox.*
+*If you need to support Firefox < 78, stay on version 5 as version 6 uses regex features not available in Firefox < 78.*
 
 ## Usage
 
