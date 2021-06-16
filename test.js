@@ -18,7 +18,6 @@ test('camelCase', t => {
 	t.is(camelCase('..foo..bar..'), 'fooBar');
 	t.is(camelCase('foo_bar'), 'fooBar');
 	t.is(camelCase('__foo__bar__'), 'fooBar');
-	t.is(camelCase('__foo__bar__'), 'fooBar');
 	t.is(camelCase('foo bar'), 'fooBar');
 	t.is(camelCase('  foo  bar  '), 'fooBar');
 	t.is(camelCase('-'), '-');
