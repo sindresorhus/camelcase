@@ -34,7 +34,7 @@ const preserveConsecutiveUppercase = input => {
 };
 
 const postProcess = (input, options) => {
-	return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
+	return input.replace(/[_.\- \/]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
 		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
 };
 
