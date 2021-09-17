@@ -76,4 +76,4 @@ const camelCase = (input, options) => {
 	return postProcess(input, options);
 };
 
-module.exports = camelCase;
+export default camelCase;

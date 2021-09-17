@@ -11,8 +11,9 @@
 		"url": "https://sindresorhus.com"
 	},
 	"engines": {
-		"node": ">=10"
+		"node": ">=12.20"
 	},
+	"type": "module",
 	"scripts": {
 		"test": "xo && ava && tsd"
 	},

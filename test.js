@@ -1,5 +1,5 @@
 import test from 'ava';
-import camelCase from '.';
+import camelCase from './index.js';
 
 test('camelCase', t => {
 	t.is(camelCase('foo'), 'foo');
