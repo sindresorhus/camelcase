@@ -87,5 +87,3 @@ const camelCase = (input, options) => {
 };
 
 module.exports = camelCase;
-// TODO: Remove this for the next major release
-module.exports.default = camelCase;
