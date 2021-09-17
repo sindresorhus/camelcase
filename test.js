@@ -207,5 +207,7 @@ test('camelCase with locale option', t => {
 test('invalid input', t => {
 	t.throws(() => {
 		camelCase(1);
-	}, /Expected the input to be/);
+	}, {
+		message: /Expected the input to be/,
+	});
 });
