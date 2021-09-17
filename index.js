@@ -1,5 +1,3 @@
-'use strict';
-
 const preserveCamelCase = (string, locale) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
@@ -29,14 +27,10 @@ const preserveCamelCase = (string, locale) => {
 	return string;
 };
 
-const preserveConsecutiveUppercase = input => {
-	return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
-};
+const preserveConsecutiveUppercase = input => input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
 
-const postProcess = (input, options) => {
-	return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
-		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
-};
+const postProcess = (input, options) => input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
+	.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
 
 const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
@@ -46,7 +40,7 @@ const camelCase = (input, options) => {
 	options = {
 		pascalCase: false,
 		preserveConsecutiveUppercase: false,
-		...options
+		...options,
 	};
 
 	if (Array.isArray(input)) {
@@ -73,11 +67,7 @@ const camelCase = (input, options) => {
 
 	input = input.replace(/^[_.\- ]+/, '');
 
-	if (options.preserveConsecutiveUppercase) {
-		input = preserveConsecutiveUppercase(input);
-	} else {
-		input = input.toLocaleLowerCase();
-	}
+	input = options.preserveConsecutiveUppercase ? preserveConsecutiveUppercase(input) : input.toLocaleLowerCase();
 
 	if (options.pascalCase) {
 		input = input.charAt(0).toLocaleUpperCase(options.locale) + input.slice(1);
