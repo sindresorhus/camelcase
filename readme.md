@@ -15,7 +15,7 @@ $ npm install camelcase
 ## Usage
 
 ```js
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -98,7 +98,7 @@ Default: The host environment’s current locale.
 The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
 
 ```js
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 camelCase('lorem-ipsum', {locale: 'en-US'});
 //=> 'loremIpsum'
