@@ -4,6 +4,8 @@
 
 Correctly handles Unicode strings.
 
+If you use this on untrusted user input, don't forget to limit the length to something reasonable.
+
 ## Install
 
 ```
