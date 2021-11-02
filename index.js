@@ -1,5 +1,7 @@
 'use strict';
 
+const regexp1 = /[\p{Lu}]/u;
+const regexp2 = /[\p{Ll}]/u;
 const preserveCamelCase = (string, locale) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
@@ -8,13 +10,13 @@ const preserveCamelCase = (string, locale) => {
 	for (let i = 0; i < string.length; i++) {
 		const character = string[i];
 
-		if (isLastCharLower && /[\p{Lu}]/u.test(character)) {
+		if (isLastCharLower && regexp1.test(character)) {
 			string = string.slice(0, i) + '-' + string.slice(i);
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
 			i++;
-		} else if (isLastCharUpper && isLastLastCharUpper && /[\p{Ll}]/u.test(character)) {
+		} else if (isLastCharUpper && isLastLastCharUpper && regexp2.test(character)) {
 			string = string.slice(0, i - 1) + '-' + string.slice(i - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
@@ -29,15 +31,22 @@ const preserveCamelCase = (string, locale) => {
 	return string;
 };
 
+const regexp3 = /^[\p{Lu}](?![\p{Lu}])/gu;
 const preserveConsecutiveUppercase = input => {
-	return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
+	regexp3.lastIndex = 0;
+	return input.replace(regexp3, m1 => m1.toLowerCase());
 };
 
+const regexp4 = /[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu;
+const regexp5 = /\d+([\p{Alpha}\p{N}_]|$)/gu;
 const postProcess = (input, options) => {
-	return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
-		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
+	regexp4.lastIndex = 0;
+	regexp5.lastIndex = 0;
+	return input.replace(regexp4, (_, p1) => p1.toLocaleUpperCase(options.locale))
+		.replace(regexp5, m => m.toLocaleUpperCase(options.locale));
 };
 
+const regexp6 = /^[_.\- ]+/;
 const camelCase = (input, options) => {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
@@ -71,7 +80,7 @@ const camelCase = (input, options) => {
 		input = preserveCamelCase(input, options.locale);
 	}
 
-	input = input.replace(/^[_.\- ]+/, '');
+	input = input.replace(regexp6, '');
 
 	if (options.preserveConsecutiveUppercase) {
 		input = preserveConsecutiveUppercase(input);
