@@ -60,7 +60,15 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
 //=> 'FooBAR'
 
+camelCase('lorem-ipsum') // on a platform with 'en-US'
 camelCase('lorem-ipsum', {locale: 'en-US'});
+//=> 'loremIpsum'
+
+camelCase('lorem-ipsum') // on a platform with 'tr-TR'
+camelCase('lorem-ipsum', {locale: 'tr-TR'});
+//=> 'loremİpsum'
+
+camelCase('lorem-ipsum', {locale: false}); // ignore platform locale
 //=> 'loremIpsum'
 ```
 
@@ -94,7 +102,7 @@ Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
 ##### locale
 
-Type: `string | string[]`\
+Type: `false | string | string[]`\
 Default: The host environment’s current locale.
 
 The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
@@ -113,6 +121,18 @@ camelCase('lorem-ipsum', {locale: ['en-US', 'en-GB']});
 
 camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
 //=> 'loremİpsum'
+```
+
+Setting `locale: false` ignores the platform locale and uses the [Unicode Default Case Conversion](https://unicode-org.github.io/icu/userguide/transforms/casemappings.html#simple-single-character-case-mapping) algorithm:
+
+```js
+// On a platform with 'tr-TR'
+
+camelCase('lorem-ipsum');
+//=> 'loremİpsum'
+
+camelCase('lorem-ipsum', {locale: false});
+//=> 'loremIpsum'
 ```
 
 ## camelcase for enterprise
