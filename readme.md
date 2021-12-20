@@ -60,15 +60,7 @@ camelCase(['__foo__', '--bar'], {pascalCase: true});
 camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
 //=> 'FooBAR'
 
-camelCase('lorem-ipsum') // on a platform with 'en-US'
 camelCase('lorem-ipsum', {locale: 'en-US'});
-//=> 'loremIpsum'
-
-camelCase('lorem-ipsum') // on a platform with 'tr-TR'
-camelCase('lorem-ipsum', {locale: 'tr-TR'});
-//=> 'loremİpsum'
-
-camelCase('lorem-ipsum', {locale: false}); // ignore platform locale
 //=> 'loremIpsum'
 ```
 
