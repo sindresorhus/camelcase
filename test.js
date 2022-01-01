@@ -204,8 +204,43 @@ test('camelCase with locale option', t => {
 	t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: ['en-EN', 'en-GB']}), 'IpsumDolor');
 });
 
+test('camelCase with disabled locale', t => {
+	withLocaleCaseFunctionsMocked(() => {
+		t.is(camelCase('lorem-ipsum', {locale: false}), 'loremIpsum');
+		t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: false}), 'IpsumDolor');
+		t.is(camelCase('ipsum-DOLOR', {pascalCase: true, locale: false, preserveConsecutiveUppercase: true}), 'IpsumDOLOR');
+	});
+});
+
 test('invalid input', t => {
 	t.throws(() => {
 		camelCase(1);
 	}, /Expected the input to be/);
 });
+
+/* eslint-disable no-extend-native */
+const withLocaleCaseFunctionsMocked = fn => {
+	const throwWhenBeingCalled = () => {
+		throw new Error('Should not be called');
+	};
+
+	const toLocaleUpperCase = Object.getOwnPropertyDescriptor(String.prototype, 'toLocaleUpperCase');
+	const toLocaleLowerCase = Object.getOwnPropertyDescriptor(String.prototype, 'toLocaleLowerCase');
+
+	Object.defineProperty(String.prototype, 'toLocaleUpperCase', {
+		...toLocaleUpperCase,
+		value: throwWhenBeingCalled
+	});
+	Object.defineProperty(String.prototype, 'toLocaleLowerCase', {
+		...toLocaleLowerCase,
+		value: throwWhenBeingCalled
+	});
+
+	try {
+		fn();
+	} finally {
+		Object.defineProperty(String.prototype, 'toLocaleUpperCase', toLocaleUpperCase);
+		Object.defineProperty(String.prototype, 'toLocaleLowerCase', toLocaleLowerCase);
+	}
+};
+/* eslint-enable no-extend-native */
