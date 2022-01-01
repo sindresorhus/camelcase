@@ -118,6 +118,8 @@ camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
 Setting `locale: false` ignores the platform locale and uses the [Unicode Default Case Conversion](https://unicode-org.github.io/icu/userguide/transforms/casemappings.html#simple-single-character-case-mapping) algorithm:
 
 ```js
+const camelCase = require('camelcase');
+
 // On a platform with 'tr-TR'
 
 camelCase('lorem-ipsum');
