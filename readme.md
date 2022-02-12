@@ -92,6 +92,13 @@ Default: `false`
 
 Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
+##### target
+
+Type: `string`\
+Default: `_.\- `
+
+Determine the target characters for conversion: `foo_bar.1` → `fooBar.1`.
+
 ##### locale
 
 Type: `false | string | string[]`\

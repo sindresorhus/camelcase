@@ -45,11 +45,16 @@ const preserveConsecutiveUppercase = (input, toLowerCase) => {
 	return input.replace(LEADING_CAPITAL, m1 => toLowerCase(m1));
 };
 
-const postProcess = (input, toUpperCase) => {
-	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
+const postProcess = (input, toUpperCase, convertTarget) => {
+	let separatorsAndIdentifier = SEPARATORS_AND_IDENTIFIER;
+	if (convertTarget) {
+		separatorsAndIdentifier = new RegExp(convertTarget + IDENTIFIER.source, 'gu');
+	}
+
+	separatorsAndIdentifier.lastIndex = 0;
 	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
 
-	return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier))
+	return input.replace(separatorsAndIdentifier, (_, identifier) => toUpperCase(identifier))
 		.replace(NUMBERS_AND_IDENTIFIER, m => toUpperCase(m));
 };
 
@@ -93,7 +98,37 @@ const camelCase = (input, options) => {
 		input = preserveCamelCase(input, toLowerCase, toUpperCase);
 	}
 
-	input = input.replace(LEADING_SEPARATORS, '');
+	let leadingSeparators = LEADING_SEPARATORS;
+
+	let convertTarget = '';
+	if (options.target) {
+		const {target} = options;
+		convertTarget = '[';
+		if (target.includes('-')) {
+			convertTarget += '-';
+		}
+
+		if (target.includes('_')) {
+			convertTarget += '_';
+		}
+
+		if (target.includes('.')) {
+			convertTarget += '.';
+		}
+
+		if (target.includes('/')) {
+			convertTarget += '//';
+		}
+
+		if (target.includes(' ')) {
+			convertTarget += ' ';
+		}
+
+		convertTarget += ']+';
+		leadingSeparators = new RegExp('^' + convertTarget);
+	}
+
+	input = input.replace(leadingSeparators, '');
 
 	if (options.preserveConsecutiveUppercase) {
 		input = preserveConsecutiveUppercase(input, toLowerCase);
@@ -105,7 +140,7 @@ const camelCase = (input, options) => {
 		input = toUpperCase(input.charAt(0)) + input.slice(1);
 	}
 
-	return postProcess(input, toUpperCase);
+	return postProcess(input, toUpperCase, convertTarget);
 };
 
 module.exports = camelCase;

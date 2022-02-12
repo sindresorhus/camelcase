@@ -64,6 +64,7 @@ test('camelCase', t => {
 	t.is(camelCase('桑德在这里。'), '桑德在这里。');
 	t.is(camelCase('桑德在这里。'), '桑德在这里。');
 	t.is(camelCase('桑德_在这里。'), '桑德在这里。');
+	t.is(camelCase('foo_bar.1'), 'fooBar1');
 });
 
 test('camelCase with pascalCase option', t => {
@@ -191,6 +192,13 @@ test('camelCase with both pascalCase and preserveConsecutiveUppercase option', t
 	t.is(camelCase('pозовыйПушистыйFOOдинорогиf', {pascalCase: true, preserveConsecutiveUppercase: true}), 'PозовыйПушистыйFOOдинорогиf');
 	t.is(camelCase('桑德在这里。', {pascalCase: true, preserveConsecutiveUppercase: true}), '桑德在这里。');
 	t.is(camelCase('桑德_在这里。', {pascalCase: true, preserveConsecutiveUppercase: true}), '桑德在这里。');
+});
+
+test('camelCase with target option', t => {
+	t.is(camelCase('foo_bar.1', {target: '_\\- '}), 'fooBar.1');
+	t.is(camelCase('foo_bar-1', {target: '_.\\ '}), 'fooBar-1');
+	t.is(camelCase('foo_bar/1', {target: '_.- '}), 'fooBar/1');
+	t.is(camelCase('foo_bar 1', {target: '_.\\-'}), 'fooBar 1');
 });
 
 test('camelCase with locale option', t => {
