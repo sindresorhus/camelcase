@@ -45,10 +45,10 @@ const preserveConsecutiveUppercase = (input, toLowerCase) => {
 	return input.replace(LEADING_CAPITAL, m1 => toLowerCase(m1));
 };
 
-const postProcess = (input, toUpperCase, convertTarget) => {
+const postProcess = (input, toUpperCase, regString) => {
 	let separatorsAndIdentifier = SEPARATORS_AND_IDENTIFIER;
-	if (convertTarget) {
-		separatorsAndIdentifier = new RegExp(convertTarget + IDENTIFIER.source, 'gu');
+	if (regString) {
+		separatorsAndIdentifier = new RegExp(regString + IDENTIFIER.source, 'gu');
 	}
 
 	separatorsAndIdentifier.lastIndex = 0;
@@ -100,32 +100,28 @@ const camelCase = (input, options) => {
 
 	let leadingSeparators = LEADING_SEPARATORS;
 
-	let convertTarget = '';
-	if (options.target) {
-		const {target} = options;
-		convertTarget = '[';
-		if (target.includes('-')) {
-			convertTarget += '-';
+	let regString = '';
+	if (options.preserveCharacters) {
+		const {preserveCharacters} = options;
+		regString = '[';
+		if (!preserveCharacters.includes('-')) {
+			regString += '-';
 		}
 
-		if (target.includes('_')) {
-			convertTarget += '_';
+		if (!preserveCharacters.includes('_')) {
+			regString += '_';
 		}
 
-		if (target.includes('.')) {
-			convertTarget += '.';
+		if (!preserveCharacters.includes('.')) {
+			regString += '.';
 		}
 
-		if (target.includes('/')) {
-			convertTarget += '//';
+		if (!preserveCharacters.includes(' ')) {
+			regString += ' ';
 		}
 
-		if (target.includes(' ')) {
-			convertTarget += ' ';
-		}
-
-		convertTarget += ']+';
-		leadingSeparators = new RegExp('^' + convertTarget);
+		regString += ']+';
+		leadingSeparators = new RegExp('^' + regString);
 	}
 
 	input = input.replace(leadingSeparators, '');
@@ -140,7 +136,7 @@ const camelCase = (input, options) => {
 		input = toUpperCase(input.charAt(0)) + input.slice(1);
 	}
 
-	return postProcess(input, toUpperCase, convertTarget);
+	return postProcess(input, toUpperCase, regString);
 };
 
 module.exports = camelCase;

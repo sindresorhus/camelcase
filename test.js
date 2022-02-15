@@ -194,11 +194,16 @@ test('camelCase with both pascalCase and preserveConsecutiveUppercase option', t
 	t.is(camelCase('桑德_在这里。', {pascalCase: true, preserveConsecutiveUppercase: true}), '桑德在这里。');
 });
 
-test('camelCase with target option', t => {
-	t.is(camelCase('foo_bar.1', {target: '_\\- '}), 'fooBar.1');
-	t.is(camelCase('foo_bar-1', {target: '_.\\ '}), 'fooBar-1');
-	t.is(camelCase('foo_bar/1', {target: '_.- '}), 'fooBar/1');
-	t.is(camelCase('foo_bar 1', {target: '_.\\-'}), 'fooBar 1');
+test('camelCase with preserveCharacters option', t => {
+	t.is(camelCase('foo_bar.1', {preserveCharacters: ['.']}), 'fooBar.1');
+	t.is(camelCase('foo_bar-1', {preserveCharacters: ['-']}), 'fooBar-1');
+	t.is(camelCase('foo_bar 1', {preserveCharacters: [' ']}), 'fooBar 1');
+	t.is(camelCase('foo.bar_1', {preserveCharacters: ['_']}), 'fooBar_1');
+	t.is(camelCase('foo_bar.1-1', {preserveCharacters: ['.', '-']}), 'fooBar.1-1');
+	t.is(camelCase('abc_def.ghi-jkl mno', {preserveCharacters: ['_']}), 'abc_defGhiJklMno');
+	t.is(camelCase('abc_def.ghi-jkl mno', {preserveCharacters: ['_', '.', '-', ' ']}), 'abc_def.ghi-jkl mno');
+	t.is(camelCase('foo_BAR.1', {pascalCase: true, preserveCharacters: ['.']}), 'FooBar.1');
+	t.is(camelCase('foo_BAR.1', {preserveConsecutiveUppercase: true, preserveCharacters: ['.']}), 'fooBAR.1');
 });
 
 test('camelCase with locale option', t => {
@@ -217,6 +222,7 @@ test('camelCase with disabled locale', t => {
 		t.is(camelCase('lorem-ipsum', {locale: false}), 'loremIpsum');
 		t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: false}), 'IpsumDolor');
 		t.is(camelCase('ipsum-DOLOR', {pascalCase: true, locale: false, preserveConsecutiveUppercase: true}), 'IpsumDOLOR');
+		t.is(camelCase('lorem-ipsum.1', {pascalCase: true, locale: false, preserveConsecutiveUppercase: true, preserveCharacters: ['.']}), 'LoremIpsum.1');
 	});
 });
 

@@ -92,12 +92,20 @@ Default: `false`
 
 Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
-##### target
+##### preserveCharacters
 
-Type: `string`\
-Default: `_.\- `
+Type: `string[]`\
 
-Determine the target characters for conversion: `foo_bar.1` → `fooBar.1`.
+Preserve the given characters. The characters that can be specified are '_', '.', '-', ' ' or a combination thereof.
+```js
+const camelCase = require('camelcase');
+
+camelCase('foo_bar.1', {preserveCharacters: ['.']});
+//=> 'fooBar.1'
+
+camelCase('foo_bar.1-1', {preserveCharacters: ['.', '-']);
+//=> 'fooBar.1-1'
+```
 
 ##### locale
 
