@@ -23,8 +23,8 @@ test('camelCase', t => {
 	t.is(camelCase('__foo__bar__'), 'fooBar');
 	t.is(camelCase('foo bar'), 'fooBar');
 	t.is(camelCase('  foo  bar  '), 'fooBar');
-	t.is(camelCase('-'), '-');
-	t.is(camelCase(' - '), '-');
+	t.is(camelCase('-'), '');
+	t.is(camelCase(' - '), '');
 	t.is(camelCase('fooBar'), 'fooBar');
 	t.is(camelCase('fooBar-baz'), 'fooBarBaz');
 	t.is(camelCase('foìBar-baz'), 'foìBarBaz');
@@ -40,6 +40,13 @@ test('camelCase', t => {
 	t.is(camelCase(['', '']), '');
 	t.is(camelCase('--'), '');
 	t.is(camelCase(''), '');
+	t.is(camelCase('_'), '');
+	t.is(camelCase(' '), '');
+	t.is(camelCase('.'), '');
+	t.is(camelCase('..'), '');
+	t.is(camelCase('--'), '');
+	t.is(camelCase('  '), '');
+	t.is(camelCase('__'), '');
 	t.is(camelCase('--__--_--_'), '');
 	t.is(camelCase(['---_', '--', '', '-_- ']), '');
 	t.is(camelCase('foo bar?'), 'fooBar?');
@@ -89,8 +96,8 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('__foo__bar__', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('foo bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('  foo  bar  ', {pascalCase: true}), 'FooBar');
-	t.is(camelCase('-', {pascalCase: true}), '-');
-	t.is(camelCase(' - ', {pascalCase: true}), '-');
+	t.is(camelCase('-', {pascalCase: true}), '');
+	t.is(camelCase(' - ', {pascalCase: true}), '');
 	t.is(camelCase('fooBar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('fooBar-baz', {pascalCase: true}), 'FooBarBaz');
 	t.is(camelCase('foìBar-baz', {pascalCase: true}), 'FoìBarBaz');
