@@ -1,5 +1,5 @@
 import {expectType} from 'tsd';
-import camelCase = require('.');
+import camelCase from './index.js';
 
 expectType<string>(camelCase('foo-bar'));
 expectType<string>(camelCase('розовый_пушистый_единороги'));

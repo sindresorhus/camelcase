@@ -1,5 +1,3 @@
-'use strict';
-
 const UPPERCASE = /[\p{Lu}]/u;
 const LOWERCASE = /[\p{Ll}]/u;
 const LEADING_CAPITAL = /^[\p{Lu}](?![\p{Lu}])/gu;
@@ -15,17 +13,17 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase) => {
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
 
-	for (let i = 0; i < string.length; i++) {
-		const character = string[i];
+	for (let index = 0; index < string.length; index++) {
+		const character = string[index];
 
 		if (isLastCharLower && UPPERCASE.test(character)) {
-			string = string.slice(0, i) + '-' + string.slice(i);
+			string = string.slice(0, index) + '-' + string.slice(index);
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
-			i++;
+			index++;
 		} else if (isLastCharUpper && isLastLastCharUpper && LOWERCASE.test(character)) {
-			string = string.slice(0, i - 1) + '-' + string.slice(i - 1);
+			string = string.slice(0, index - 1) + '-' + string.slice(index - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
 			isLastCharLower = true;
@@ -53,7 +51,7 @@ const postProcess = (input, toUpperCase) => {
 		.replace(NUMBERS_AND_IDENTIFIER, m => toUpperCase(m));
 };
 
-const camelCase = (input, options) => {
+export default function camelCase(input, options) {
 	if (!(typeof input === 'string' || Array.isArray(input))) {
 		throw new TypeError('Expected the input to be `string | string[]`');
 	}
@@ -61,7 +59,7 @@ const camelCase = (input, options) => {
 	options = {
 		pascalCase: false,
 		preserveConsecutiveUppercase: false,
-		...options
+		...options,
 	};
 
 	if (Array.isArray(input)) {
@@ -76,12 +74,13 @@ const camelCase = (input, options) => {
 		return '';
 	}
 
-	const toLowerCase = options.locale === false ?
-		string => string.toLowerCase() :
-		string => string.toLocaleLowerCase(options.locale);
-	const toUpperCase = options.locale === false ?
-		string => string.toUpperCase() :
-		string => string.toLocaleUpperCase(options.locale);
+	const toLowerCase = options.locale === false
+		? string => string.toLowerCase()
+		: string => string.toLocaleLowerCase(options.locale);
+
+	const toUpperCase = options.locale === false
+		? string => string.toUpperCase()
+		: string => string.toLocaleUpperCase(options.locale);
 
 	if (input.length === 1) {
 		if (SEPARATORS.test(input)) {
@@ -98,20 +97,11 @@ const camelCase = (input, options) => {
 	}
 
 	input = input.replace(LEADING_SEPARATORS, '');
-
-	if (options.preserveConsecutiveUppercase) {
-		input = preserveConsecutiveUppercase(input, toLowerCase);
-	} else {
-		input = toLowerCase(input);
-	}
+	input = options.preserveConsecutiveUppercase ? preserveConsecutiveUppercase(input, toLowerCase) : toLowerCase(input);
 
 	if (options.pascalCase) {
 		input = toUpperCase(input.charAt(0)) + input.slice(1);
 	}
 
 	return postProcess(input, toUpperCase);
-};
-
-module.exports = camelCase;
-// TODO: Remove this for the next major release
-module.exports.default = camelCase;
+}

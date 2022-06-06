@@ -8,16 +8,14 @@ If you use this on untrusted user input, don't forget to limit the length to som
 
 ## Install
 
+```sh
+npm install camelcase
 ```
-$ npm install camelcase
-```
-
-*If you need to support Firefox < 78, stay on version 5 as version 6 uses regex features not available in Firefox < 78.*
 
 ## Usage
 
 ```js
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 camelCase('foo-bar');
 //=> 'fooBar'
@@ -90,7 +88,7 @@ Uppercase the first character: `foo-bar` → `FooBar`
 Type: `boolean`\
 Default: `false`
 
-Preserve the consecutive uppercase characters: `foo-BAR` → `FooBAR`.
+Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`.
 
 ##### locale
 
@@ -100,7 +98,7 @@ Default: The host environment’s current locale.
 The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
 
 ```js
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 camelCase('lorem-ipsum', {locale: 'en-US'});
 //=> 'loremIpsum'
@@ -118,7 +116,7 @@ camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
 Setting `locale: false` ignores the platform locale and uses the [Unicode Default Case Conversion](https://unicode-org.github.io/icu/userguide/transforms/casemappings.html#simple-single-character-case-mapping) algorithm:
 
 ```js
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 // On a platform with 'tr-TR'
 

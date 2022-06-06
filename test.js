@@ -1,5 +1,5 @@
 import test from 'ava';
-import camelCase from '.';
+import camelCase from './index.js';
 
 test('camelCase', t => {
 	t.is(camelCase('foo'), 'foo');
@@ -228,7 +228,9 @@ test('camelCase with disabled locale', t => {
 test('invalid input', t => {
 	t.throws(() => {
 		camelCase(1);
-	}, /Expected the input to be/);
+	}, {
+		message: /Expected the input to be/,
+	});
 });
 
 /* eslint-disable no-extend-native */
@@ -242,11 +244,11 @@ const withLocaleCaseFunctionsMocked = fn => {
 
 	Object.defineProperty(String.prototype, 'toLocaleUpperCase', {
 		...toLocaleUpperCase,
-		value: throwWhenBeingCalled
+		value: throwWhenBeingCalled,
 	});
 	Object.defineProperty(String.prototype, 'toLocaleLowerCase', {
 		...toLocaleLowerCase,
-		value: throwWhenBeingCalled
+		value: throwWhenBeingCalled,
 	});
 
 	try {

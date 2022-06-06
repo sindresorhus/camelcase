@@ -10,8 +10,11 @@
 		"email": "sindresorhus@gmail.com",
 		"url": "https://sindresorhus.com"
 	},
+	"type": "module",
+	"exports": "./index.js",
+	"types": "./index.d.ts",
 	"engines": {
-		"node": ">=10"
+		"node": ">=14.16"
 	},
 	"scripts": {
 		"test": "xo && ava && tsd"
@@ -37,8 +40,8 @@
 		"pascal-case"
 	],
 	"devDependencies": {
-		"ava": "^1.4.1",
-		"tsd": "^0.11.0",
-		"xo": "^0.28.3"
+		"ava": "^4.3.0",
+		"tsd": "^0.20.0",
+		"xo": "^0.49.0"
 	}
 }
