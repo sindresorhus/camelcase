@@ -84,6 +84,10 @@ const camelCase = (input, options) => {
 		string => string.toLocaleUpperCase(options.locale);
 
 	if (input.length === 1) {
+		if (SEPARATORS.test(input)) {
+			return '';
+		}
+
 		return options.pascalCase ? toUpperCase(input) : toLowerCase(input);
 	}
 
