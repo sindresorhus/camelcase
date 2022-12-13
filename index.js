@@ -8,13 +8,15 @@ const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source);
 const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gu');
 const NUMBERS_AND_IDENTIFIER = new RegExp('\\d+' + IDENTIFIER.source, 'gu');
 
-const preserveCamelCase = (string, toLowerCase, toUpperCase) => {
+const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
+	let isLastLastCharPreserved = false;
 
 	for (let index = 0; index < string.length; index++) {
 		const character = string[index];
+		isLastLastCharPreserved = index > 2 ? string[index - 3] === '-' : true;
 
 		if (isLastCharLower && UPPERCASE.test(character)) {
 			string = string.slice(0, index) + '-' + string.slice(index);
@@ -22,7 +24,7 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase) => {
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
 			index++;
-		} else if (isLastCharUpper && isLastLastCharUpper && LOWERCASE.test(character)) {
+		} else if (isLastCharUpper && isLastLastCharUpper && LOWERCASE.test(character) && (!isLastLastCharPreserved || preserveConsecutiveUppercase)) {
 			string = string.slice(0, index - 1) + '-' + string.slice(index - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
@@ -93,7 +95,7 @@ export default function camelCase(input, options) {
 	const hasUpperCase = input !== toLowerCase(input);
 
 	if (hasUpperCase) {
-		input = preserveCamelCase(input, toLowerCase, toUpperCase);
+		input = preserveCamelCase(input, toLowerCase, toUpperCase, options.preserveConsecutiveUppercase);
 	}
 
 	input = input.replace(LEADING_SEPARATORS, '');
