@@ -8,6 +8,19 @@ const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source);
 const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gu');
 const NUMBERS_AND_IDENTIFIER = new RegExp('\\d+' + IDENTIFIER.source, 'gu');
 
+const applyCasingExpectAfterNumber = (string, applyCase) => {
+	let result = '';
+	for (let i = 0; i < string.length; i++) {
+		const currentChar = string[i];
+		const previousChar = string[i - 1];
+
+		const previousCharIsNumber = !Number.isNaN(Number(previousChar));
+		result += i > 0 && previousCharIsNumber ? currentChar : applyCase(currentChar);
+	}
+
+	return result;
+};
+
 const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
@@ -77,12 +90,12 @@ export default function camelCase(input, options) {
 	}
 
 	const toLowerCase = options.locale === false
-		? string => string.toLowerCase()
-		: string => string.toLocaleLowerCase(options.locale);
+		? string => applyCasingExpectAfterNumber(string, char => char.toLowerCase())
+		: string => applyCasingExpectAfterNumber(string, char => char.toLocaleLowerCase(options.locale));
 
 	const toUpperCase = options.locale === false
-		? string => string.toUpperCase()
-		: string => string.toLocaleUpperCase(options.locale);
+		? string => applyCasingExpectAfterNumber(string, char => char.toUpperCase())
+		: string => applyCasingExpectAfterNumber(string, char => char.toLocaleUpperCase(options.locale));
 
 	if (input.length === 1) {
 		if (SEPARATORS.test(input)) {
