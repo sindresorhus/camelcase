@@ -49,8 +49,8 @@ const postProcess = (input, toUpperCase) => {
 	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
 	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
 
-	return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier))
-		.replace(NUMBERS_AND_IDENTIFIER, m => toUpperCase(m));
+	return input.replace(NUMBERS_AND_IDENTIFIER, (m, n, i) => ['_', '-'].includes(input.charAt(i + m.length)) ? m : toUpperCase(m))
+		.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier));
 };
 
 export default function camelCase(input, options) {
