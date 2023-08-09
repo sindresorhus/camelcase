@@ -49,7 +49,7 @@ const postProcess = (input, toUpperCase) => {
 	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
 	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
 
-	return input.replace(NUMBERS_AND_IDENTIFIER, (m, n, i) => ['_', '-'].includes(input.charAt(i + m.length)) ? m : toUpperCase(m))
+	return input.replace(NUMBERS_AND_IDENTIFIER, (match, pattern, offset) => ['_', '-'].includes(input.charAt(offset + match.length)) ? match : toUpperCase(match))
 		.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier));
 };
 
