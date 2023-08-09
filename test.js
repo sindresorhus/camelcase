@@ -138,6 +138,7 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('РОЗОВЫЙ_ПУШИСТЫЙ-ЕДИНОРОГИ', {pascalCase: true}), 'РозовыйПушистыйЕдинороги');
 	t.is(camelCase('桑德在这里。', {pascalCase: true}), '桑德在这里。');
 	t.is(camelCase('桑德_在这里。', {pascalCase: true}), '桑德在这里。');
+	t.is(camelCase('a1b', {pascalCase: true}), 'A1B');
 });
 
 test('camelCase with preserveConsecutiveUppercase option', t => {
