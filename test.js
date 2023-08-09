@@ -2,6 +2,9 @@ import test from 'ava';
 import camelCase from './index.js';
 
 test('camelCase', t => {
+	t.is(camelCase('b2b_registration_request'), 'b2bRegistrationRequest');
+	t.is(camelCase('b2b-registration-request'), 'b2bRegistrationRequest');
+	t.is(camelCase('b2b_registration_b2b_request'), 'b2bRegistrationB2bRequest');
 	t.is(camelCase('foo'), 'foo');
 	t.is(camelCase('IDs'), 'ids');
 	t.is(camelCase('FooIDs'), 'fooIds');
@@ -76,6 +79,7 @@ test('camelCase', t => {
 });
 
 test('camelCase with pascalCase option', t => {
+	t.is(camelCase('b2b_registration_request', {pascalCase: true}), 'B2bRegistrationRequest');
 	t.is(camelCase('foo', {pascalCase: true}), 'Foo');
 	t.is(camelCase('foo-bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('foo-bar-baz', {pascalCase: true}), 'FooBarBaz');
