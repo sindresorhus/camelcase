@@ -45,7 +45,7 @@ Convert a dash/dot/underscore/space separated string to camelCase or PascalCase:
 
 Correctly handles Unicode strings.
 
-@param input - String to convert to camel case.
+@param input - The string to convert to camel case.
 
 @example
 ```
@@ -72,7 +72,7 @@ camelCase('--foo.bar', {pascalCase: false});
 camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
 //=> 'fooBAR'
 
-camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}));
+camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true});
 //=> 'FooBAR'
 
 camelCase('foo bar');

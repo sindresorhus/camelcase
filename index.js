@@ -42,15 +42,16 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutive
 const preserveConsecutiveUppercase = (input, toLowerCase) => {
 	LEADING_CAPITAL.lastIndex = 0;
 
-	return input.replace(LEADING_CAPITAL, m1 => toLowerCase(m1));
+	return input.replaceAll(LEADING_CAPITAL, match => toLowerCase(match));
 };
 
 const postProcess = (input, toUpperCase) => {
 	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
 	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
 
-	return input.replace(NUMBERS_AND_IDENTIFIER, (match, pattern, offset) => ['_', '-'].includes(input.charAt(offset + match.length)) ? match : toUpperCase(match))
-		.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier));
+	return input
+		.replaceAll(NUMBERS_AND_IDENTIFIER, (match, pattern, offset) => ['_', '-'].includes(input.charAt(offset + match.length)) ? match : toUpperCase(match))
+		.replaceAll(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier));
 };
 
 export default function camelCase(input, options) {

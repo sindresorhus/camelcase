@@ -38,7 +38,7 @@ camelCase('--foo.bar', {pascalCase: false});
 camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
 //=> 'fooBAR'
 
-camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true}));
+camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true});
 //=> 'FooBAR'
 
 camelCase('foo bar');
@@ -70,7 +70,7 @@ camelCase('lorem-ipsum', {locale: 'en-US'});
 
 Type: `string | string[]`
 
-String to convert to camel case.
+The string to convert to camel case.
 
 #### options
 
@@ -127,16 +127,9 @@ camelCase('lorem-ipsum', {locale: false});
 //=> 'loremIpsum'
 ```
 
-## camelcase for enterprise
-
-Available as part of the Tidelift Subscription.
-
-The maintainers of camelcase and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-camelcase?utm_source=npm-camelcase&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
-
 ## Related
 
 - [decamelize](https://github.com/sindresorhus/decamelize) - The inverse of this module
-- [uppercamelcase](https://github.com/SamVerschueren/uppercamelcase) - Like this module, but to PascalCase instead of camelCase
 - [titleize](https://github.com/sindresorhus/titleize) - Capitalize every word in string
 - [humanize-string](https://github.com/sindresorhus/humanize-string) - Convert a camelized/dasherized/underscored string into a humanized one
 - [camelcase-keys](https://github.com/sindresorhus/camelcase-keys) - Convert object keys to camel case
