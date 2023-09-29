@@ -1,22 +1,42 @@
 export type Options = {
 	/**
-	Uppercase the first character: `foo-bar` → `FooBar`.
+	Uppercase the first character: `foo-bar` → `FooBar`
 
 	@default false
+
+	@example
+	```
+	import camelCase from 'camelcase';
+
+	camelCase('foo-bar', {pascalCase: true});
+	//=> 'FooBar'
+
+	camelCase('foo-bar', {pascalCase: false});
+	//=> 'fooBar'
+	```
 	*/
 	readonly pascalCase?: boolean;
 
 	/**
-	Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`.
+	Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`
 
 	@default false
+
+	@example
+	```
+	import camelCase from 'camelcase';
+
+	camelCase('foo-BAR', {preserveConsecutiveUppercase: true});
+	//=> 'fooBAR'
+
+	camelCase('foo-BAR', {preserveConsecutiveUppercase: false});
+	//=> 'fooBar'
+	````
 	*/
 	readonly preserveConsecutiveUppercase?: boolean;
 
 	/**
 	The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.
-
-	Setting `locale: false` ignores the platform locale and uses the [Unicode Default Case Conversion](https://unicode-org.github.io/icu/userguide/transforms/casemappings.html#simple-single-character-case-mapping) algorithm.
 
 	Default: The host environment’s current locale.
 
@@ -35,6 +55,21 @@ export type Options = {
 
 	camelCase('lorem-ipsum', {locale: ['tr', 'TR', 'tr-TR']});
 	//=> 'loremİpsum'
+	```
+
+	Setting `locale: false` ignores the platform locale and uses the [Unicode Default Case Conversion](https://unicode-org.github.io/icu/userguide/transforms/casemappings.html#simple-single-character-case-mapping) algorithm:
+
+	@example
+	```
+	import camelCase from 'camelcase';
+
+	// On a platform with `tr-TR`.`
+
+	camelCase('lorem-ipsum');
+	//=> 'loremİpsum'
+
+	camelCase('lorem-ipsum', {locale: false});
+	//=> 'loremIpsum'
 	```
 	*/
 	readonly locale?: false | string | readonly string[];
@@ -63,18 +98,6 @@ camelCase('Foo-Bar');
 camelCase('розовый_пушистый_единорог');
 //=> 'розовыйПушистыйЕдинорог'
 
-camelCase('Foo-Bar', {pascalCase: true});
-//=> 'FooBar'
-
-camelCase('--foo.bar', {pascalCase: false});
-//=> 'fooBar'
-
-camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
-//=> 'fooBAR'
-
-camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true});
-//=> 'FooBAR'
-
 camelCase('foo bar');
 //=> 'fooBar'
 
@@ -86,14 +109,8 @@ camelCase(process.argv[3]);
 camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
-camelCase(['__foo__', '--bar'], {pascalCase: true});
-//=> 'FooBar'
-
-camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
-//=> 'FooBAR'
-
-camelCase('lorem-ipsum', {locale: 'en-US'});
-//=> 'loremIpsum'
+camelCase(['__foo__', '--bar']);
+//=> 'fooBar'
 ```
 */
 export default function camelcase(

@@ -29,18 +29,6 @@ camelCase('Foo-Bar');
 camelCase('розовый_пушистый_единорог');
 //=> 'розовыйПушистыйЕдинорог'
 
-camelCase('Foo-Bar', {pascalCase: true});
-//=> 'FooBar'
-
-camelCase('--foo.bar', {pascalCase: false});
-//=> 'fooBar'
-
-camelCase('Foo-BAR', {preserveConsecutiveUppercase: true});
-//=> 'fooBAR'
-
-camelCase('fooBAR', {pascalCase: true, preserveConsecutiveUppercase: true});
-//=> 'FooBAR'
-
 camelCase('foo bar');
 //=> 'fooBar'
 
@@ -52,14 +40,8 @@ camelCase(process.argv[3]);
 camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
-camelCase(['__foo__', '--bar'], {pascalCase: true});
-//=> 'FooBar'
-
-camelCase(['foo', 'BAR'], {pascalCase: true, preserveConsecutiveUppercase: true})
-//=> 'FooBAR'
-
-camelCase('lorem-ipsum', {locale: 'en-US'});
-//=> 'loremIpsum'
+camelCase(['__foo__', '--bar']);
+//=> 'fooBar'
 ```
 
 ## API
@@ -83,12 +65,32 @@ Default: `false`
 
 Uppercase the first character: `foo-bar` → `FooBar`
 
+```js
+import camelCase from 'camelcase';
+
+camelCase('foo-bar', {pascalCase: true});
+//=> 'FooBar'
+
+camelCase('foo-bar', {pascalCase: false});
+//=> 'fooBar'
+```
+
 ##### preserveConsecutiveUppercase
 
 Type: `boolean`\
 Default: `false`
 
-Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`.
+Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`
+
+```js
+import camelCase from 'camelcase';
+
+camelCase('foo-BAR', {preserveConsecutiveUppercase: true});
+//=> 'fooBAR'
+
+camelCase('foo-BAR', {preserveConsecutiveUppercase: false});
+//=> 'fooBar'
+````
 
 ##### locale
 
@@ -118,7 +120,7 @@ Setting `locale: false` ignores the platform locale and uses the [Unicode Defaul
 ```js
 import camelCase from 'camelcase';
 
-// On a platform with 'tr-TR'
+// On a platform with `tr-TR`.
 
 camelCase('lorem-ipsum');
 //=> 'loremİpsum'
