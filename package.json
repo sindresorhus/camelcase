@@ -40,6 +40,7 @@
 		"pascal-case"
 	],
 	"devDependencies": {
+		"@fast-check/ava": "^2.0.2",
 		"ava": "^5.3.1",
 		"tsd": "^0.28.1",
 		"xo": "^0.55.1"

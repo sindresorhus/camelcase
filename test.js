@@ -1,4 +1,5 @@
 import test from 'ava';
+import {fc, testProp} from '@fast-check/ava';
 import camelCase from './index.js';
 
 test('camelCase', t => {
@@ -234,6 +235,21 @@ test('invalid input', t => {
 	}, {
 		message: /Expected the input to be/,
 	});
+});
+
+const localeArb = fc.constantFrom('tr-TR', 'en-EN', 'en-GB');
+testProp.failing('camelCase idempotence', [
+	fc.string(),
+	fc.record({
+		locale: fc.oneof(fc.boolean(), localeArb, fc.uniqueArray(localeArb)),
+		pascalCase: fc.boolean(),
+		preserveConsecutiveUppercase: fc.boolean(),
+	}),
+], (t, string, options) => {
+	const camelCased = camelCase(string, options);
+	const doubleCamelCased = camelCase(camelCased, options);
+
+	t.is(doubleCamelCased, camelCased);
 });
 
 /* eslint-disable no-extend-native */
