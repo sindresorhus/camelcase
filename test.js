@@ -227,6 +227,73 @@ test('camelCase with disabled locale', t => {
 	});
 });
 
+test('number handling follows Google Style Guide', t => {
+	// Numbers don't create word boundaries (Google Java Style Guide)
+	// https://google.github.io/styleguide/javaguide.html#s5.3-camel-case
+	t.is(camelCase('turn_on_2sv', {capitalizeAfterNumber: false}), 'turnOn2sv'); // NOT turnOn2Sv
+	t.is(camelCase('a1b_text', {capitalizeAfterNumber: false}), 'a1bText'); // NOT a1BText
+	t.is(camelCase('foo2bar', {capitalizeAfterNumber: false}), 'foo2bar'); // NOT foo2Bar
+	t.is(camelCase('version2', {capitalizeAfterNumber: false}), 'version2');
+
+	// With pascalCase
+	t.is(camelCase('turn_on_2sv', {pascalCase: true, capitalizeAfterNumber: false}), 'TurnOn2sv');
+	t.is(camelCase('a1b_text', {pascalCase: true, capitalizeAfterNumber: false}), 'A1bText');
+});
+
+test('camelCase with capitalizeAfterNumber option', t => {
+	t.is(camelCase('Hello1World'), 'hello1World');
+	t.is(camelCase('Hello1World', {capitalizeAfterNumber: false}), 'hello1World'); // Preserves uppercase W
+	t.is(camelCase('foo2bar'), 'foo2Bar');
+	t.is(camelCase('foo2bar', {capitalizeAfterNumber: false}), 'foo2bar');
+	t.is(camelCase('hello1world'), 'hello1World');
+	t.is(camelCase('hello1world', {capitalizeAfterNumber: false}), 'hello1world'); // Preserves lowercase w
+	t.is(camelCase('turn_on_2sv'), 'turnOn2Sv');
+	t.is(camelCase('turn_on_2sv', {capitalizeAfterNumber: false}), 'turnOn2sv');
+
+	t.is(camelCase('Hello1World', {pascalCase: true}), 'Hello1World');
+	t.is(camelCase('Hello1World', {pascalCase: true, capitalizeAfterNumber: false}), 'Hello1World'); // Preserves uppercase W
+	t.is(camelCase('turn_on_2sv', {pascalCase: true}), 'TurnOn2Sv');
+	t.is(camelCase('turn_on_2sv', {pascalCase: true, capitalizeAfterNumber: false}), 'TurnOn2sv');
+});
+
+test('capitalizeAfterNumber edge cases', t => {
+	t.is(camelCase('foo-2bar'), 'foo2Bar');
+	t.is(camelCase('foo-2bar', {capitalizeAfterNumber: false}), 'foo2bar');
+	t.is(camelCase('foo-2bar', {pascalCase: true}), 'Foo2Bar');
+	t.is(camelCase('foo-2bar', {pascalCase: true, capitalizeAfterNumber: false}), 'Foo2bar');
+
+	t.is(camelCase('2foo-bar'), '2FooBar');
+	t.is(camelCase('2foo-bar', {capitalizeAfterNumber: false}), '2fooBar');
+	t.is(camelCase('2foo-bar', {pascalCase: true}), '2FooBar');
+	t.is(camelCase('2foo-bar', {pascalCase: true, capitalizeAfterNumber: false}), '2fooBar');
+
+	t.is(camelCase('XML2HTTP'), 'xml2Http');
+	t.is(camelCase('XML2HTTP', {capitalizeAfterNumber: false}), 'xml2Http'); // Preserves uppercase H
+	t.is(camelCase('XML2HTTP', {pascalCase: true}), 'Xml2Http');
+	t.is(camelCase('XML2HTTP', {pascalCase: true, capitalizeAfterNumber: false}), 'Xml2Http'); // Preserves uppercase H
+
+	t.is(camelCase('2a'), '2A');
+	t.is(camelCase('2a', {capitalizeAfterNumber: false}), '2a');
+	t.is(camelCase('2a', {pascalCase: true}), '2A');
+	t.is(camelCase('2a', {pascalCase: true, capitalizeAfterNumber: false}), '2a');
+
+	t.is(camelCase('foo2BAR', {preserveConsecutiveUppercase: true}), 'foo2BAR');
+	t.is(camelCase('foo2BAR', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'foo2BAR');
+});
+
+test('case preservation after numbers (capitalizeAfterNumber: false)', t => {
+	// When capitalizeAfterNumber is false, original case is preserved
+	t.is(camelCase('Textures_3d', {capitalizeAfterNumber: false}), 'textures3d'); // Preserves lowercase d
+	t.is(camelCase('Textures_3D', {capitalizeAfterNumber: false}), 'textures3D'); // Preserves uppercase D
+	t.is(camelCase('version_1a', {capitalizeAfterNumber: false}), 'version1a');
+	t.is(camelCase('version_1A', {capitalizeAfterNumber: false}), 'version1A');
+	t.is(camelCase('foo_2_bar', {capitalizeAfterNumber: false}), 'foo2Bar'); // 'bar' is after separator, not directly after number
+
+	// With pascalCase
+	t.is(camelCase('Textures_3d', {pascalCase: true, capitalizeAfterNumber: false}), 'Textures3d');
+	t.is(camelCase('Textures_3D', {pascalCase: true, capitalizeAfterNumber: false}), 'Textures3D');
+});
+
 test('preserve leading underscores and dollar signs', t => {
 	// Leading _ and $ have semantic meaning (private/internal, jQuery/observables)
 	t.is(camelCase('_foo_bar'), '_fooBar');

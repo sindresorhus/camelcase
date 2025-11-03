@@ -92,6 +92,40 @@ camelCase('foo-BAR', {preserveConsecutiveUppercase: false});
 //=> 'fooBar'
 ````
 
+##### capitalizeAfterNumber
+
+Type: `boolean`\
+Default: `true`
+
+Controls whether letters immediately following digits are treated as word boundaries.
+
+**When `true` (default):**
+Capitalize the first letter immediately following a numeric sequence, unless a separator intervenes. This aligns with most utilities, such as Lodash.
+
+**When `false`:**
+Do not treat digits as word boundaries. Preserve the original case of letters immediately following digits. Separators still create word boundaries. This follows the Google Java Style Guide which treats numbers as non-boundary characters.
+
+```js
+import camelCase from 'camelcase';
+
+camelCase('foo2bar', {capitalizeAfterNumber: true});
+//=> 'foo2Bar'  (capitalizes 'b' after digit)
+
+camelCase('foo2bar', {capitalizeAfterNumber: false});
+//=> 'foo2bar'  (preserves lowercase 'b')
+
+// Preserves original case after numbers when false
+camelCase('Textures_3d', {capitalizeAfterNumber: false});
+//=> 'textures3d'  (preserves lowercase 'd')
+
+camelCase('Textures_3D', {capitalizeAfterNumber: false});
+//=> 'textures3D'  (preserves uppercase 'D')
+
+// Separators still create boundaries
+camelCase('foo_2_bar', {capitalizeAfterNumber: false});
+//=> 'foo2Bar'  ('bar' follows separator, not digit)
+```
+
 ##### locale
 
 Type: `false | string | string[]`\
