@@ -77,6 +77,14 @@ export default function camelCase(input, options) {
 		return '';
 	}
 
+	// Preserve leading _ and $ as they have semantic meaning
+	const leadingPrefix = input.match(/^[_$]*/)[0];
+	input = input.slice(leadingPrefix.length);
+
+	if (input.length === 0) {
+		return leadingPrefix;
+	}
+
 	const toLowerCase = options.locale === false
 		? string => string.toLowerCase()
 		: string => string.toLocaleLowerCase(options.locale);
@@ -87,10 +95,10 @@ export default function camelCase(input, options) {
 
 	if (input.length === 1) {
 		if (SEPARATORS.test(input)) {
-			return '';
+			return leadingPrefix;
 		}
 
-		return options.pascalCase ? toUpperCase(input) : toLowerCase(input);
+		return leadingPrefix + (options.pascalCase ? toUpperCase(input) : toLowerCase(input));
 	}
 
 	const hasUpperCase = input !== toLowerCase(input);
@@ -106,5 +114,5 @@ export default function camelCase(input, options) {
 		input = toUpperCase(input.charAt(0)) + input.slice(1);
 	}
 
-	return postProcess(input, toUpperCase);
+	return leadingPrefix + postProcess(input, toUpperCase);
 }

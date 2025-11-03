@@ -22,7 +22,7 @@ test('camelCase', t => {
 	t.is(camelCase('foo..bar'), 'fooBar');
 	t.is(camelCase('..foo..bar..'), 'fooBar');
 	t.is(camelCase('foo_bar'), 'fooBar');
-	t.is(camelCase('__foo__bar__'), 'fooBar');
+	t.is(camelCase('__foo__bar__'), '__fooBar');
 	t.is(camelCase('foo bar'), 'fooBar');
 	t.is(camelCase('  foo  bar  '), 'fooBar');
 	t.is(camelCase('-'), '');
@@ -42,13 +42,13 @@ test('camelCase', t => {
 	t.is(camelCase(['', '']), '');
 	t.is(camelCase('--'), '');
 	t.is(camelCase(''), '');
-	t.is(camelCase('_'), '');
+	t.is(camelCase('_'), '_');
 	t.is(camelCase(' '), '');
 	t.is(camelCase('.'), '');
 	t.is(camelCase('..'), '');
 	t.is(camelCase('--'), '');
 	t.is(camelCase('  '), '');
-	t.is(camelCase('__'), '');
+	t.is(camelCase('__'), '__');
 	t.is(camelCase('--__--_--_'), '');
 	t.is(camelCase(['---_', '--', '', '-_- ']), '');
 	t.is(camelCase('foo bar?'), 'fooBar?');
@@ -95,8 +95,7 @@ test('camelCase with pascalCase option', t => {
 	t.is(camelCase('foo..bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('..foo..bar..', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('foo_bar', {pascalCase: true}), 'FooBar');
-	t.is(camelCase('__foo__bar__', {pascalCase: true}), 'FooBar');
-	t.is(camelCase('__foo__bar__', {pascalCase: true}), 'FooBar');
+	t.is(camelCase('__foo__bar__', {pascalCase: true}), '__FooBar');
 	t.is(camelCase('foo bar', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('  foo  bar  ', {pascalCase: true}), 'FooBar');
 	t.is(camelCase('-', {pascalCase: true}), '');
@@ -226,6 +225,36 @@ test('camelCase with disabled locale', t => {
 		t.is(camelCase('ipsum-dolor', {pascalCase: true, locale: false}), 'IpsumDolor');
 		t.is(camelCase('ipsum-DOLOR', {pascalCase: true, locale: false, preserveConsecutiveUppercase: true}), 'IpsumDOLOR');
 	});
+});
+
+test('preserve leading underscores and dollar signs', t => {
+	// Leading _ and $ have semantic meaning (private/internal, jQuery/observables)
+	t.is(camelCase('_foo_bar'), '_fooBar');
+	t.is(camelCase('$foo_bar'), '$fooBar');
+	t.is(camelCase('__foo_bar'), '__fooBar');
+	t.is(camelCase('$$foo_bar'), '$$fooBar');
+	t.is(camelCase('$_foo_bar'), '$_fooBar');
+	t.is(camelCase('_$foo_bar'), '_$fooBar');
+
+	// Edge cases: only prefix characters
+	t.is(camelCase('_'), '_');
+	t.is(camelCase('__'), '__');
+	t.is(camelCase('$'), '$');
+	t.is(camelCase('$$$'), '$$$');
+	t.is(camelCase('_$'), '_$');
+
+	// With pascalCase
+	t.is(camelCase('_foo_bar', {pascalCase: true}), '_FooBar');
+	t.is(camelCase('$foo_bar', {pascalCase: true}), '$FooBar');
+	t.is(camelCase('__foo_bar', {pascalCase: true}), '__FooBar');
+
+	// With preserveConsecutiveUppercase
+	t.is(camelCase('_foo_BAR', {preserveConsecutiveUppercase: true}), '_fooBAR');
+	t.is(camelCase('$foo_BAR', {preserveConsecutiveUppercase: true}), '$fooBAR');
+
+	// Combined with other transformations
+	t.is(camelCase('_foo-bar_baz'), '_fooBarBaz');
+	t.is(camelCase('$http_service'), '$httpService');
 });
 
 test('invalid input', t => {
