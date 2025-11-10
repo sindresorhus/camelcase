@@ -41,8 +41,11 @@ camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
 camelCase(['__foo__', '--bar']);
-//=> 'fooBar'
+//=> '__fooBar'
 ```
+
+> [!NOTE]
+> Not idempotent when special characters are present. `camelCase('{ A')` → `'{A}'`, but `camelCase('{A}')` → `'{a}'`.
 
 ## API
 

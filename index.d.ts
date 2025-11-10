@@ -145,7 +145,7 @@ camelCase(['foo', 'bar']);
 //=> 'fooBar'
 
 camelCase(['__foo__', '--bar']);
-//=> 'fooBar'
+//=> '__fooBar'
 ```
 */
 export default function camelcase(

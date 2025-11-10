@@ -324,6 +324,89 @@ test('preserve leading underscores and dollar signs', t => {
 	t.is(camelCase('$http_service'), '$httpService');
 });
 
+test('edge cases: emoji and unicode', t => {
+	// Emoji treated as non-separator special character
+	t.is(camelCase('foo-🦄-bar'), 'foo-🦄Bar');
+	t.is(camelCase('foo🦄bar'), 'foo🦄bar');
+
+	// Zero-width characters preserved
+	t.is(camelCase('foo\u200Dbar'), 'foo\u200Dbar');
+
+	// RTL languages
+	t.is(camelCase('foo_مرحبا_bar'), 'fooمرحباBar');
+	t.is(camelCase('foo_שלום_bar'), 'fooשלוםBar');
+});
+
+test('edge cases: combined options', t => {
+	// All options together
+	t.is(camelCase('foo_2BAR_baz', {pascalCase: true, preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'Foo2BARBaz');
+
+	// Leading prefix with all options
+	t.is(camelCase('__foo_2BAR', {pascalCase: true, preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), '__Foo2BAR');
+	t.is(camelCase('$_foo_BAR', {pascalCase: true, preserveConsecutiveUppercase: true}), '$_FooBAR');
+});
+
+test('edge cases: numbers', t => {
+	// Decimal numbers (dots are separators)
+	t.is(camelCase('version_3.14.15'), 'version31415');
+
+	// Negative sign is special character
+	t.is(camelCase('temp_-5_degrees'), 'temp5Degrees');
+
+	// Only numbers
+	t.is(camelCase('123'), '123');
+	t.is(camelCase('123_456_789'), '123456789');
+});
+
+test('edge cases: locale with capitalizeAfterNumber', t => {
+	// Turkish i/İ with numbers and capitalizeAfterNumber
+	t.is(camelCase('test_1i', {locale: 'tr-TR'}), 'test1İ');
+	t.is(camelCase('test_1i', {locale: 'tr-TR', capitalizeAfterNumber: false}), 'test1i');
+
+	// Empty locale array falls back to default
+	t.is(camelCase('foo-bar', {locale: []}), 'fooBar');
+});
+
+test('edge cases: special characters', t => {
+	// Multiple consecutive special chars
+	t.is(camelCase('foo##bar'), 'foo##bar');
+	t.is(camelCase('foo@#$bar'), 'foo@#$bar');
+
+	// Mixed separators and special chars
+	t.is(camelCase('foo_@#_bar'), 'foo_@#Bar');
+});
+
+test('edge cases: array input', t => {
+	// Array with leading prefixes
+	t.is(camelCase(['_foo', '$bar']), '_foo-$bar');
+
+	// Array with only whitespace elements
+	t.is(camelCase(['  ', '  foo  ', '  ']), 'foo');
+	t.is(camelCase(['', '  ', '']), '');
+});
+
+test('edge cases: uppercase transitions', t => {
+	// Multiple rapid transitions
+	t.is(camelCase('aAbBcC'), 'aAbBcC');
+	t.is(camelCase('a1A2B3C'), 'a1A2B3C');
+
+	// Single uppercase with preserveConsecutiveUppercase
+	t.is(camelCase('fooAbar', {preserveConsecutiveUppercase: true}), 'fooAbar');
+	t.is(camelCase('A', {preserveConsecutiveUppercase: true}), 'a');
+});
+
+test('edge cases: extreme inputs', t => {
+	// Very long separator sequences
+	const longPrefix = '_'.repeat(50);
+	t.is(camelCase(longPrefix + 'foo' + longPrefix + 'bar'), longPrefix + 'fooBar');
+
+	// Mixed repeated separators
+	t.is(camelCase('_-. _-. _-.foo'), '_foo');
+
+	// Only separators
+	t.is(camelCase('-_.  -_. -_.'), '');
+});
+
 test('invalid input', t => {
 	t.throws(() => {
 		camelCase(1);
