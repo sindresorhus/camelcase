@@ -45,7 +45,9 @@ camelCase(['__foo__', '--bar']);
 ```
 
 > [!NOTE]
-> Not idempotent when special characters are present. `camelCase('{ A')` → `'{A}'`, but `camelCase('{A}')` → `'{a}'`.
+> Not idempotent in general. `camelCase('{ A')` → `'{A'`, but `camelCase('{A}')` → `'{a}'`.
+>
+> Mixed case input is not idempotent either, because the word boundaries have to be guessed: `camelCase('Ac_c A')` → `'acCA'`, but `camelCase('acCA')` → `'acCa'`.
 
 ## API
 
@@ -53,7 +55,7 @@ camelCase(['__foo__', '--bar']);
 
 #### input
 
-Type: `string | string[]`
+Type: `string | readonly string[]`
 
 The string to convert to camel case.
 
@@ -83,7 +85,7 @@ camelCase('foo-bar', {pascalCase: false});
 Type: `boolean`\
 Default: `false`
 
-Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`
+Preserve consecutive uppercase characters: `foo-BAR` → `fooBAR`
 
 ```js
 import camelCase from 'camelcase';
@@ -93,7 +95,7 @@ camelCase('foo-BAR', {preserveConsecutiveUppercase: true});
 
 camelCase('foo-BAR', {preserveConsecutiveUppercase: false});
 //=> 'fooBar'
-````
+```
 
 ##### capitalizeAfterNumber
 
@@ -103,7 +105,9 @@ Default: `true`
 Controls whether letters immediately following digits are treated as word boundaries.
 
 **When `true` (default):**
-Capitalize the first letter immediately following a numeric sequence, unless a separator intervenes. This aligns with most utilities, such as Lodash.
+Capitalize the first letter immediately following a numeric sequence, unless that letter is itself immediately followed by a separator. This is similar to Lodash, which also capitalizes after a number, but without the separator condition.
+
+The extra condition keeps a token like `b2b` intact, so `b2b_registration` becomes `b2bRegistration` rather than `b2BRegistration`. It also means a trailing separator can stop the capitalization, as in `1a` → `1A` but `1a.` → `1a`.
 
 **When `false`:**
 Do not treat digits as word boundaries. Preserve the original case of letters immediately following digits. Separators still create word boundaries. This follows the Google Java Style Guide which treats numbers as non-boundary characters.
@@ -131,7 +135,7 @@ camelCase('foo_2_bar', {capitalizeAfterNumber: false});
 
 ##### locale
 
-Type: `false | string | string[]`\
+Type: `false | string | readonly string[]`\
 Default: The host environment’s current locale.
 
 The locale parameter indicates the locale to be used to convert to upper/lower case according to any locale-specific case mappings. If multiple locales are given in an array, the best available locale is used.

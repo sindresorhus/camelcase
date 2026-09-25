@@ -5,11 +5,7 @@
 	"license": "MIT",
 	"repository": "sindresorhus/camelcase",
 	"funding": "https://github.com/sponsors/sindresorhus",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "https://sindresorhus.com"
-	},
+	"author": "Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
 	"type": "module",
 	"exports": {
 		"types": "./index.d.ts",
@@ -17,17 +13,16 @@
 	},
 	"sideEffects": false,
 	"engines": {
-		"node": ">=20"
+		"node": ">=22"
 	},
 	"scripts": {
-		"test": "xo && ava && tsd"
+		"test": "xo && node --test && tsd"
 	},
 	"files": [
 		"index.js",
 		"index.d.ts"
 	],
 	"keywords": [
-		"camelcase",
 		"camel-case",
 		"camel",
 		"case",
@@ -43,8 +38,7 @@
 		"pascal-case"
 	],
 	"devDependencies": {
-		"ava": "^6.4.1",
 		"tsd": "^0.33.0",
-		"xo": "^1.2.3"
+		"xo": "^5.0.1"
 	}
 }

@@ -1,15 +1,22 @@
-const UPPERCASE = /[\p{Lu}]/u;
-const LOWERCASE = /[\p{Ll}]/u;
-const LEADING_CAPITAL = /^[\p{Lu}](?![\p{Lu}])/u;
-const SEPARATORS = /[_.\- ]+/;
+const UPPERCASE = /\p{Uppercase_Letter}/v;
+const LOWERCASE = /\p{Lowercase_Letter}/v;
+const LEADING_CAPITAL = /^\p{Uppercase_Letter}(?!\p{Uppercase_Letter})/v;
+const SEPARATORS = /[ \-._]+/v;
 
 // The |$ alternative allows matching at end-of-string, capturing empty string
 // This enables NUMBERS_AND_IDENTIFIER to match digits at string end (e.g., "test123")
-const IDENTIFIER = /([\p{Alpha}\p{N}_]|$)/u;
+const IDENTIFIER = /(?<identifier>[\p{Alphabetic}\p{Number}_]|$)/v;
 
-const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source);
-const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gu');
-const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\d+` + IDENTIFIER.source, 'gu');
+const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source, 'v');
+// A long run of separators followed by a rejecting character backtracks quadratically.
+// This is the documented "limit the input length" limitation in the readme. Making the run
+// atomic would change results for inputs like `a-_-!`, where the trailing `_` is the identifier.
+// eslint-disable-next-line regexp/no-super-linear-move
+const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gv');
+// False positive: `\d` is a subset of the identifier class, so a rejecting suffix costs one
+// backtrack, not one per digit. Measured linear up to 160k digits.
+// eslint-disable-next-line regexp/no-super-linear-move
+const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\d+` + IDENTIFIER.source, 'gv');
 
 const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
 	let isLastCharLower = false;
@@ -60,10 +67,10 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutive
 
 const preserveConsecutiveUppercase = (input, toLowerCase) => input.replace(LEADING_CAPITAL, match => toLowerCase(match));
 
-const processWithCasePreservation = (input, toLowerCase, preserveConsecutiveUppercase) => {
+const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecutiveUppercase) => {
 	let result = '';
-	let previousWasNumber = false;
-	let previousWasUppercase = false;
+	let wasNumberBefore = false;
+	let wasUpperCaseBefore = false;
 
 	// Convert input to array for lookahead capability
 	const characters = [...input];
@@ -71,38 +78,38 @@ const processWithCasePreservation = (input, toLowerCase, preserveConsecutiveUppe
 	for (let index = 0; index < characters.length; index++) {
 		const character = characters[index];
 		const isUpperCase = UPPERCASE.test(character);
-		const nextCharIsUpperCase = index + 1 < characters.length && UPPERCASE.test(characters[index + 1]);
+		const isNextCharUpperCase = index + 1 < characters.length && UPPERCASE.test(characters[index + 1]);
 
-		if (previousWasNumber && /[\p{Alpha}]/u.test(character)) {
+		if (wasNumberBefore && /\p{Alphabetic}/v.test(character)) {
 			// Letter after number - preserve original case
 			result += character;
-			previousWasNumber = false;
-			previousWasUppercase = isUpperCase;
-		} else if (preserveConsecutiveUppercase && isUpperCase && (previousWasUppercase || nextCharIsUpperCase)) {
+			wasNumberBefore = false;
+			wasUpperCaseBefore = isUpperCase;
+		} else if (shouldPreserveConsecutiveUppercase && isUpperCase && (wasUpperCaseBefore || isNextCharUpperCase)) {
 			// Part of consecutive uppercase sequence when preserveConsecutiveUppercase is true - keep it
 			result += character;
-			previousWasUppercase = true;
-		} else if (/\d/.test(character)) {
+			wasUpperCaseBefore = true;
+		} else if (/\d/v.test(character)) {
 			// Number - keep as-is and track it
 			result += character;
-			previousWasNumber = true;
-			previousWasUppercase = false;
+			wasNumberBefore = true;
+			wasUpperCaseBefore = false;
 		} else if (SEPARATORS.test(character)) {
-			// Separator - keep as-is and maintain previousWasNumber state
+			// Separator - keep as-is and maintain wasNumberBefore state
 			result += character;
-			previousWasUppercase = false;
+			wasUpperCaseBefore = false;
 		} else {
 			// Regular character - lowercase it
 			result += toLowerCase(character);
-			previousWasNumber = false;
-			previousWasUppercase = false;
+			wasNumberBefore = false;
+			wasUpperCaseBefore = false;
 		}
 	}
 
 	return result;
 };
 
-/**
+/*
 Core post-processing:
 - Collapses separators and uppercases the following identifier character.
 - Optionally uppercases the identifier following a numeric sequence.
@@ -116,8 +123,9 @@ Example: "b2b_registration" with capitalizeAfterNumber: true
 - Pass 2: "_r" matches, replace with "R" → "b2bRegistration"
 */
 const postProcess = (input, toUpperCase, {capitalizeAfterNumber}) => {
-	const transformNumericIdentifier = capitalizeAfterNumber
-		? (match, identifier, offset, string) => {
+	// When `capitalizeAfterNumber` is false, numbers do not create a word boundary, so pass 1 is skipped entirely.
+	const withNumbers = capitalizeAfterNumber
+		? input.replaceAll(NUMBERS_AND_IDENTIFIER, (match, identifier, offset, string) => {
 			const nextCharacter = string.charAt(offset + match.length);
 
 			// If the numeric+identifier run is immediately followed by a separator,
@@ -128,16 +136,13 @@ const postProcess = (input, toUpperCase, {capitalizeAfterNumber}) => {
 
 			// Only uppercase the identifier part (not the digits) for efficiency
 			return identifier ? match.slice(0, -identifier.length) + toUpperCase(identifier) : match;
-		}
-		// When false: numbers do not create a word boundary.
-		: match => match;
+		})
+		: input;
 
-	return input
-		.replaceAll(NUMBERS_AND_IDENTIFIER, transformNumericIdentifier)
-		.replaceAll(
-			SEPARATORS_AND_IDENTIFIER,
-			(_, identifier) => toUpperCase(identifier),
-		);
+	return withNumbers.replaceAll(
+		SEPARATORS_AND_IDENTIFIER,
+		(_, identifier) => toUpperCase(identifier),
+	);
 };
 
 export default function camelCase(input, options) {
@@ -166,7 +171,7 @@ export default function camelCase(input, options) {
 	}
 
 	// Preserve leading _ and $ as they have semantic meaning
-	const leadingPrefix = input.match(/^[_$]*/)[0];
+	const leadingPrefix = input.match(/^[$_]*/v)[0];
 	input = input.slice(leadingPrefix.length);
 
 	if (input.length === 0) {

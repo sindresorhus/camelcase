@@ -18,7 +18,7 @@ export type Options = {
 	readonly pascalCase?: boolean;
 
 	/**
-	Preserve consecutive uppercase characters: `foo-BAR` → `FooBAR`
+	Preserve consecutive uppercase characters: `foo-BAR` → `fooBAR`
 
 	@default false
 
@@ -31,17 +31,19 @@ export type Options = {
 
 	camelCase('foo-BAR', {preserveConsecutiveUppercase: false});
 	//=> 'fooBar'
-	````
+	```
 	*/
 	readonly preserveConsecutiveUppercase?: boolean;
 
 	/**
 	Controls whether letters immediately following digits are treated as word boundaries.
 
-	**When `true` (default):**
-	Capitalize the first letter immediately following a numeric sequence, unless a separator intervenes. This aligns with most utilities, such as Lodash.
+	When `true` (default):
+	Capitalize the first letter immediately following a numeric sequence, unless that letter is itself immediately followed by a separator. This is similar to Lodash, which also capitalizes after a number, but without the separator condition.
 
-	**When `false`:**
+	The extra condition keeps a token like `b2b` intact, so `b2b_registration` becomes `b2bRegistration` rather than `b2BRegistration`. It also means a trailing separator can stop the capitalization, as in `1a` → `1A` but `1a.` → `1a`.
+
+	When `false`:
 	Do not treat digits as word boundaries. Preserve the original case of letters immediately following digits. Separators still create word boundaries. This follows the Google Java Style Guide which treats numbers as non-boundary characters.
 
 	@default true
@@ -98,7 +100,7 @@ export type Options = {
 	```
 	import camelCase from 'camelcase';
 
-	// On a platform with `tr-TR`.`
+	// On a platform with `tr-TR`.
 
 	camelCase('lorem-ipsum');
 	//=> 'loremİpsum'
@@ -150,5 +152,5 @@ camelCase(['__foo__', '--bar']);
 */
 export default function camelcase(
 	input: string | readonly string[],
-	options?: Options
+	options?: Options,
 ): string;
