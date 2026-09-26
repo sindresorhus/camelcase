@@ -19,23 +19,26 @@ const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.sour
 const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\d+` + IDENTIFIER.source, 'gv');
 
 const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
+	// Iterate code points, not code units. Letters outside the basic multilingual plane need a
+	// surrogate pair, so indexing the string directly would see two meaningless halves per letter.
+	const characters = [...string];
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
 	let isLastLastCharPreserved = false;
 
-	for (let index = 0; index < string.length; index++) {
-		const character = string[index];
+	for (let index = 0; index < characters.length; index++) {
+		const character = characters[index];
 
 		// Was the character 3 positions back inserted as a separator?
 		// Prevents excessive separators by checking if we recently inserted one
 		// index - 3 accounts for: current character, inserted separator, previous character
 		// Default true for early positions activates the preserveConsecutiveUppercase guard
-		isLastLastCharPreserved = index > 2 ? string[index - 3] === '-' : true;
+		isLastLastCharPreserved = index > 2 ? characters[index - 3] === '-' : true;
 
 		if (isLastCharLower && UPPERCASE.test(character)) {
 			// FooBar → Foo-Bar (insert separator before uppercase)
-			string = string.slice(0, index) + '-' + string.slice(index);
+			characters.splice(index, 0, '-');
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
@@ -47,7 +50,7 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutive
 			&& (!isLastLastCharPreserved || preserveConsecutiveUppercase)
 		) {
 			// FOOBar → FOO-Bar
-			string = string.slice(0, index - 1) + '-' + string.slice(index - 1);
+			characters.splice(index - 1, 0, '-');
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
 			isLastCharLower = true;
@@ -62,7 +65,7 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutive
 		}
 	}
 
-	return string;
+	return characters.join('');
 };
 
 const preserveConsecutiveUppercase = (input, toLowerCase) => input.replace(LEADING_CAPITAL, match => toLowerCase(match));
@@ -222,7 +225,9 @@ export default function camelCase(input, options) {
 	}
 
 	if (options.pascalCase && input.length > 0) {
-		input = toUpperCase(input[0]) + input.slice(1);
+		// Read the first code point, not the first code unit, so astral letters get uppercased.
+		const firstCharacter = String.fromCodePoint(input.codePointAt(0));
+		input = toUpperCase(firstCharacter) + input.slice(firstCharacter.length);
 	}
 
 	return leadingPrefix + postProcess(input, toUpperCase, options);

@@ -383,6 +383,67 @@ test('preserve leading underscores and dollar signs', () => {
 	assert.equal(camelCase('$http_service'), '$httpService');
 });
 
+test('astral plane letters behave like their basic plane counterparts', () => {
+	// The Osage capital/small letter A. Both need a surrogate pair, so they exercise every place
+	// where the code could mistake a code unit for a character.
+	const capital = '\u{104B0}';
+	const small = '\u{104D8}';
+
+	// Swapping the astral pair for a basic plane pair must give the same answer, so the only thing
+	// under test is the code point handling, not the choice of letter. `X`/`x` stands in for the
+	// astral pair; no other letter in the inputs below collides with it.
+	const toAstral = string => string.replaceAll(/X|x/gv, match => (match === 'X' ? capital : small));
+	const assertMirrorsBasicPlane = (astralInput, basicInput, options) => {
+		assert.equal(
+			camelCase(astralInput, options),
+			toAstral(camelCase(basicInput, options)),
+			`${JSON.stringify(astralInput)} ${JSON.stringify(options)}`,
+		);
+	};
+
+	const optionSets = [
+		undefined,
+		{pascalCase: true},
+		{preserveConsecutiveUppercase: true},
+		{capitalizeAfterNumber: false},
+		{pascalCase: true, preserveConsecutiveUppercase: true},
+		{pascalCase: true, capitalizeAfterNumber: false},
+		{preserveConsecutiveUppercase: true, capitalizeAfterNumber: false},
+		{pascalCase: true, preserveConsecutiveUppercase: true, capitalizeAfterNumber: false},
+	];
+
+	for (const basicInput of [
+		'X',
+		'x',
+		'xbar',
+		'Xbar',
+		'XXbar',
+		'fooXbar',
+		'fooXXbar',
+		'aXb',
+		'aXX',
+		'x x',
+		'X-X',
+		'1X2',
+		'X1x',
+		'foo_X_bar',
+		'xxxX',
+	]) {
+		const astralInput = toAstral(basicInput);
+		for (const options of optionSets) {
+			assertMirrorsBasicPlane(astralInput, basicInput, options);
+		}
+	}
+
+	// Spelled out, so a regression points at a specific behaviour instead of only at the mirror.
+	assert.equal(camelCase(`${small}bar`, {pascalCase: true}), `${capital}bar`);
+	assert.equal(camelCase(`a${capital}`), `a${capital}`);
+	assert.equal(camelCase(`a${capital}b`), `a${capital}b`);
+	assert.equal(camelCase(`a${capital}b`, {pascalCase: true}), `A${capital}b`);
+	assert.equal(camelCase(`foo${capital}bar`), `foo${capital}bar`);
+	assert.equal(camelCase(`${capital}${capital}bar`, {preserveConsecutiveUppercase: true}), `${small}${capital}bar`);
+});
+
 test('edge cases: emoji and unicode', () => {
 	// Emoji treated as non-separator special character
 	assert.equal(camelCase('foo-🦄-bar'), 'foo-🦄Bar');
