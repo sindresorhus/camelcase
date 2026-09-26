@@ -1,7 +1,10 @@
 const UPPERCASE = /\p{Uppercase_Letter}/v;
 const LOWERCASE = /\p{Lowercase_Letter}/v;
+const ALPHABETIC = /\p{Alphabetic}/v;
+const DIGIT = /\d/v;
 const LEADING_CAPITAL = /^\p{Uppercase_Letter}(?!\p{Uppercase_Letter})/v;
 const SEPARATORS = /[ \-._]+/v;
+const LEADING_PREFIX = /^[$_]*/v;
 
 // The |$ alternative allows matching at end-of-string, capturing empty string
 // This enables NUMBERS_AND_IDENTIFIER to match digits at string end (e.g., "test123")
@@ -73,39 +76,40 @@ const preserveConsecutiveUppercase = (input, toLowerCase) => input.replace(LEADI
 const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecutiveUppercase) => {
 	let result = '';
 	let wasNumberBefore = false;
-	let wasUpperCaseBefore = false;
 
-	// Convert input to array for lookahead capability
+	// Iterate code points, not code units (see preserveCamelCase)
 	const characters = [...input];
 
 	for (let index = 0; index < characters.length; index++) {
 		const character = characters[index];
 		const isUpperCase = UPPERCASE.test(character);
-		const isNextCharUpperCase = index + 1 < characters.length && UPPERCASE.test(characters[index + 1]);
 
-		if (wasNumberBefore && /\p{Alphabetic}/v.test(character)) {
+		// Mirrors LEADING_CAPITAL: a lone capital at the very start of the string is lowercased,
+		// even when preserveConsecutiveUppercase is on.
+		const isLoneLeadingCapital = index === 0
+			&& isUpperCase
+			&& !(index + 1 < characters.length && UPPERCASE.test(characters[index + 1]));
+
+		if (wasNumberBefore && ALPHABETIC.test(character)) {
 			// Letter after number - preserve original case
 			result += character;
 			wasNumberBefore = false;
-			wasUpperCaseBefore = isUpperCase;
-		} else if (shouldPreserveConsecutiveUppercase && isUpperCase && (wasUpperCaseBefore || isNextCharUpperCase)) {
-			// Part of consecutive uppercase sequence when preserveConsecutiveUppercase is true - keep it
+		} else if (shouldPreserveConsecutiveUppercase && isUpperCase && !isLoneLeadingCapital) {
+			// Mirror the capitalizeAfterNumber: true path, which leaves the whole string cased and only
+			// lowercases a lone leading capital. Testing only for a neighbouring uppercase character
+			// would wrongly lowercase a capital that follows, say, a punctuation mark.
 			result += character;
-			wasUpperCaseBefore = true;
-		} else if (/\d/v.test(character)) {
+		} else if (DIGIT.test(character)) {
 			// Number - keep as-is and track it
 			result += character;
 			wasNumberBefore = true;
-			wasUpperCaseBefore = false;
 		} else if (SEPARATORS.test(character)) {
 			// Separator - keep as-is and maintain wasNumberBefore state
 			result += character;
-			wasUpperCaseBefore = false;
 		} else {
 			// Regular character - lowercase it
 			result += toLowerCase(character);
 			wasNumberBefore = false;
-			wasUpperCaseBefore = false;
 		}
 	}
 
@@ -174,7 +178,7 @@ export default function camelCase(input, options) {
 	}
 
 	// Preserve leading _ and $ as they have semantic meaning
-	const leadingPrefix = input.match(/^[$_]*/v)[0];
+	const leadingPrefix = input.match(LEADING_PREFIX)[0];
 	input = input.slice(leadingPrefix.length);
 
 	if (input.length === 0) {

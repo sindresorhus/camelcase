@@ -314,6 +314,55 @@ test('capitalizeAfterNumber edge cases', () => {
 	assert.equal(camelCase('foo2BAR', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'foo2BAR');
 });
 
+test('capitalizeAfterNumber: false keeps preserveConsecutiveUppercase intact', () => {
+	// `capitalizeAfterNumber` is documented as only affecting letters that follow digits, so it must
+	// not change anything else. These inputs have no digits, so both settings must agree.
+	const assertSameWithAndWithoutNumberHandling = (input, options) => {
+		assert.equal(
+			camelCase(input, {...options, capitalizeAfterNumber: false}),
+			camelCase(input, options),
+			JSON.stringify(input),
+		);
+	};
+
+	for (const input of [
+		'a@B',
+		'a$B',
+		'a+B',
+		'a=B',
+		'a~B',
+		'x#Y',
+		'foo!Bar',
+		'foo?Bar',
+		'foo%Bar',
+		'foo(Bar',
+		'中B',
+		'a.Bar',
+		'a1B',
+		'AB',
+		'aB',
+		'IDs',
+		'FooIDs',
+		'foo🦄Bar',
+	]) {
+		assertSameWithAndWithoutNumberHandling(input, {});
+		assertSameWithAndWithoutNumberHandling(input, {pascalCase: true});
+		assertSameWithAndWithoutNumberHandling(input, {preserveConsecutiveUppercase: true});
+		assertSameWithAndWithoutNumberHandling(input, {pascalCase: true, preserveConsecutiveUppercase: true});
+	}
+
+	// Spelled out, so a regression points at the specific behaviour.
+	assert.equal(camelCase('foo!Bar', {preserveConsecutiveUppercase: true}), 'foo!Bar');
+	assert.equal(camelCase('foo!Bar', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'foo!Bar');
+	assert.equal(camelCase('a@B', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'a@B');
+	assert.equal(camelCase('a@B', {preserveConsecutiveUppercase: true}), 'a@B');
+
+	// A lone leading capital is still lowercased, exactly like the `capitalizeAfterNumber: true` path.
+	assert.equal(camelCase('AB', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'AB');
+	assert.equal(camelCase('IDs', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'iDs');
+	assert.equal(camelCase('FooIDs', {preserveConsecutiveUppercase: true, capitalizeAfterNumber: false}), 'fooIDs');
+});
+
 test('capitalizeAfterNumber stops at a separator that follows the letter', () => {
 	// The letter after a digit run is only capitalized when it is not itself followed by a
 	// separator. This is what keeps `b2b_registration` from turning into `b2BRegistration`.
