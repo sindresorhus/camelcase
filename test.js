@@ -5,6 +5,10 @@ import camelCase from './index.js';
 // Gathers failures of a property over a large cross product. Recording instead of asserting keeps
 // the loop cheap, and the report shows the count plus a few examples so the output stays readable
 // even when a whole family of inputs regresses at once.
+const SEPARATORS = /[ \-._]+/v;
+const DIGIT = /\p{Decimal_Number}/v;
+const ALPHABETIC = /\p{Alphabetic}/v;
+
 const collectMismatches = sampleLimit => {
 	const samples = [];
 	const result = {
@@ -656,10 +660,12 @@ test('pascalCase only ever changes the first character', () => {
 	assert.equal(mismatches.total, 0, mismatches.report());
 });
 
-test('lowercase words separated by separators only capitalize word starts', () => {
-	// With no case to preserve and no digits to treat as boundaries, the job is just "split on the
-	// separator runs, lowercase, capitalize every word but the first". Checked against that directly
-	// so a change in the word detection shows up on its own.
+test('the result follows the documented rules, checked against them directly', () => {
+	// For input with no case to preserve, the whole job is: split on the separator runs, lowercase,
+	// capitalize the first character of every word but the first, and capitalize the first letter
+	// after a run of decimal digits unless a separator comes right after that letter. Stating the
+	// rules like this and checking against them means a change in the word detection or the digit
+	// rule shows up on its own, instead of as one more expected value to update.
 	const reference = input => {
 		const trimmed = input.trim();
 		if (trimmed === '') {
@@ -667,25 +673,77 @@ test('lowercase words separated by separators only capitalize word starts', () =
 		}
 
 		const prefix = /^[$_]*/v.exec(trimmed)[0];
-		const words = trimmed
-			.slice(prefix.length)
-			.split(/[ \-._]+/v)
-			.filter(word => word !== '');
+		// Spreading a string is what makes this a code point list rather than a code unit list. xo
+		// wants the opposite in two different rules, and both are wrong here.
+		// eslint-disable-next-line unicorn/no-useless-spread
+		const characters = [...trimmed.slice(prefix.length)];
+		const isSeparatorAt = index => index >= 0 && index < characters.length && SEPARATORS.test(characters[index]);
 
-		if (words.length === 0) {
-			return prefix;
+		// Which word each surviving character belongs to, counting from zero.
+		const wordAt = Array.from({length: characters.length}, () => -1);
+		let word = -1;
+		for (let index = 0; index < characters.length; index++) {
+			if (isSeparatorAt(index)) {
+				continue; // A run is dropped, it does not open a word.
+			}
+
+			if (index === 0 || isSeparatorAt(index - 1)) {
+				word++;
+			}
+
+			wordAt[index] = word;
 		}
 
-		return prefix + words
-			.map((word, index) => (index === 0 ? word : word[0].toUpperCase() + word.slice(1)))
-			.join('');
+		const capitalize = new Set();
+		for (let index = 0; index < characters.length; index++) {
+			if (wordAt[index] > 0 && (index === 0 || isSeparatorAt(index - 1))) {
+				capitalize.add(index);
+			}
+		}
+
+		// A letter straight after a digit run, unless a separator comes right after the letter.
+		let hadDigit = false;
+		for (const [index, character] of characters.entries()) {
+			if (DIGIT.test(character)) {
+				hadDigit = true;
+				continue;
+			}
+
+			if (!hadDigit) {
+				continue;
+			}
+
+			hadDigit = false;
+			if (!isSeparatorAt(index) && !isSeparatorAt(index + 1) && ALPHABETIC.test(character)) {
+				capitalize.add(index);
+			}
+		}
+
+		let result = '';
+		for (const [index, character] of characters.entries()) {
+			if (isSeparatorAt(index)) {
+				continue;
+			}
+
+			result += capitalize.has(index) ? character.toUpperCase() : character.toLowerCase();
+		}
+
+		return prefix + result;
 	};
 
-	const words = ['foo', 'bar', 'baz', 'a', 'bc'];
-	const separatorRuns = ['', '-', '_', '.', ' ', '-_'];
+	// PascalCase only uppercases the first character of that, after the leading prefix.
+	const withPascalCase = input => {
+		const result = reference(input);
+		const prefix = /^[$_]*/v.exec(result)[0];
+		const rest = result.slice(prefix.length);
+		return prefix + rest.charAt(0).toUpperCase() + rest.slice(1);
+	};
 
-	// A chunk is a word followed by a separator run, so a three word input is three chunks. Keeping
-	// the nesting this shallow matters: the loop below runs once per combination.
+	const words = ['foo', 'bar', 'a', 'bc'];
+	const separatorRuns = ['', '-', '_', '.', ' ', '-_', '1', '١'];
+
+	// A chunk is a word followed by a run, so a three word input is three chunks. Keeping the
+	// nesting this shallow matters: the loop below runs once per combination.
 	const chunks = words.flatMap(word => separatorRuns.map(run => word + run));
 
 	const mismatches = collectMismatches(20);
@@ -693,10 +751,9 @@ test('lowercase words separated by separators only capitalize word starts', () =
 		for (const second of chunks) {
 			for (const third of chunks) {
 				const input = first + second + third;
-				const actual = camelCase(input);
 				mismatches.record(
-					actual === reference(input),
-					() => `${JSON.stringify(input)}: got ${JSON.stringify(actual)}, want ${JSON.stringify(reference(input))}`,
+					camelCase(input) === reference(input),
+					() => `${JSON.stringify(input)}: got ${JSON.stringify(camelCase(input))}, want ${JSON.stringify(reference(input))}`,
 				);
 			}
 		}
@@ -707,11 +764,162 @@ test('lowercase words separated by separators only capitalize word starts', () =
 	for (const run of [...separatorRuns, '--', '__', '..', ' '.repeat(2), '___', '.-', ' . ', '...', '---', '_._', ' - . ']) {
 		for (const word of words) {
 			for (const input of [run + word, run + word + run, run + run + word, run + word + run + word + run]) {
-				const actual = camelCase(input);
 				mismatches.record(
-					actual === reference(input),
-					() => `${JSON.stringify(input)}: got ${JSON.stringify(actual)}, want ${JSON.stringify(reference(input))}`,
+					camelCase(input) === reference(input),
+					() => `${JSON.stringify(input)}: got ${JSON.stringify(camelCase(input))}, want ${JSON.stringify(reference(input))}`,
 				);
+				mismatches.record(
+					camelCase(input, {pascalCase: true}) === withPascalCase(input),
+					() => `${JSON.stringify(input)} pascalCase: got ${JSON.stringify(camelCase(input, {pascalCase: true}))}, want ${JSON.stringify(withPascalCase(input))}`,
+				);
+			}
+		}
+	}
+
+	assert.equal(mismatches.total, 0, mismatches.report());
+});
+
+test('every decimal digit counts as a number, not just the ASCII ones', () => {
+	// `capitalizeAfterNumber` is documented as capitalizing the letter after a *numeric sequence*.
+	// U+0661, U+06F1, U+FF11 and U+0969 are decimal digits like 1 is, and the identifier class in
+	// index.js already counts them, so the digit run has to count them too.
+	const digits = ['\u{661}', '\u{6F1}', '\u{FF11}', '\u{969}', '\u{F22}', '\u{0BE6}', '\u{0C66}'];
+
+	const optionSets = [
+		{},
+		{pascalCase: true},
+		{capitalizeAfterNumber: false},
+		{pascalCase: true, capitalizeAfterNumber: false},
+		{preserveConsecutiveUppercase: true},
+	];
+
+	const shapes = [
+		['1foo', digit => `${digit}foo`],
+		['foo1bar', digit => `foo${digit}bar`],
+		['1A', digit => `${digit}A`],
+		['foo1bar_baz', digit => `foo${digit}bar_baz`],
+		['version_1a', digit => `version_${digit}a`],
+	];
+
+	const mismatches = collectMismatches(20);
+	for (const digit of digits) {
+		for (const options of optionSets) {
+			for (const [asciiInput, withDigit] of shapes) {
+				const input = withDigit(digit);
+				// The digit itself survives into the output, so put it back to 1 to compare shapes.
+				const actual = camelCase(input, options).replaceAll(digit, '1');
+				mismatches.record(
+					actual === camelCase(asciiInput, options),
+					() => `${JSON.stringify(input)} ${JSON.stringify(options)}: got ${JSON.stringify(actual)}, want ${JSON.stringify(camelCase(asciiInput, options))}`,
+				);
+			}
+		}
+	}
+
+	// And the same for every decimal digit in the Unicode range, not just the ones above.
+	// 0x10FFFF, the last code point, written the way the numeric separator rule wants it.
+	const lastCodePoint = 1_114_111;
+
+	for (let codePoint = 0x30; codePoint <= lastCodePoint; codePoint++) {
+		if (codePoint >= 0xD8_00 && codePoint <= 0xDF_FF) {
+			continue;
+		}
+
+		const character = String.fromCodePoint(codePoint);
+		if (character === '1' || !/\p{Decimal_Number}/v.test(character)) {
+			continue;
+		}
+
+		for (const [asciiInput, input] of [['1foo', `${character}foo`], ['a1b', `a${character}b`]]) {
+			const actual = camelCase(input).replaceAll(character, '1');
+			mismatches.record(actual === camelCase(asciiInput), () => `U+${codePoint.toString(16)}: got ${JSON.stringify(actual)}, want ${JSON.stringify(camelCase(asciiInput))}`);
+		}
+	}
+
+	assert.equal(mismatches.total, 0, mismatches.report());
+
+	// Only decimal digits. These are \p{Number} but not decimal digits, so they are not a digit
+	// run and the letter after one is not capitalized, exactly as before. The Roman numeral five is
+	// cased, so it lowercases; the other two are uncased and pass through.
+	assert.equal(camelCase('\u{B2}foo'), '\u{B2}foo');
+	assert.equal(camelCase('foo\u{B2}bar'), 'foo\u{B2}bar');
+	assert.equal(camelCase('\u{2164}foo'), '\u{2174}foo');
+	assert.equal(camelCase('foo\u{2164}bar'), 'foo\u{2174}bar');
+	assert.equal(camelCase('\u{3007}foo'), '\u{3007}foo');
+	assert.equal(camelCase('foo\u{3007}bar'), 'foo\u{3007}bar');
+});
+
+test('a letter after a separator is not a letter after a digit', () => {
+	// `capitalizeAfterNumber: false` preserves the case of a letter that immediately follows a digit
+	// and lowercases everything else. A letter that follows a *separator* is the second kind, even
+	// when digits came before the separator, so it has to be lowercased.
+	//
+	// The difference only shows for a character whose round trip through lowercasing is not the
+	// identity. U+03F4 is one: it is an Uppercase_Letter whose uppercase is itself but whose
+	// lowercase is U+03B8, whose uppercase is U+0398. Preserving it leaves an uppercase letter in
+	// the output; lowercasing it and capitalizing it afterwards gives the other capital theta.
+	assert.equal(camelCase('1-\u{3F4}'), '1\u{398}');
+	assert.equal(camelCase('1-\u{3F4}', {capitalizeAfterNumber: false}), '1\u{398}');
+	assert.equal(camelCase('1 \u{3F4}', {capitalizeAfterNumber: false}), '1\u{398}');
+	assert.equal(camelCase('1_\u{3F4}', {capitalizeAfterNumber: false}), '1\u{398}');
+	assert.equal(camelCase('1-\u{3F4}', {pascalCase: true, capitalizeAfterNumber: false}), '1\u{398}');
+
+	// U+0130 lowercases to `i` plus U+0307, so the two paths differ in normalization only.
+	assert.equal(camelCase('9-\u{130}'), '9\u{49}\u{307}');
+	assert.equal(camelCase('9-\u{130}', {capitalizeAfterNumber: false}), '9\u{49}\u{307}');
+
+	// A letter that really is right after a digit still keeps its case.
+	assert.equal(camelCase('1\u{3F4}', {capitalizeAfterNumber: false}), '1\u{3F4}');
+	assert.equal(camelCase('version_1A', {capitalizeAfterNumber: false}), 'version1A');
+	assert.equal(camelCase('Textures_3D', {capitalizeAfterNumber: false}), 'textures3D');
+	assert.equal(camelCase('foo_2_bar', {capitalizeAfterNumber: false}), 'foo2Bar');
+	assert.equal(camelCase('turn_on_2sv', {capitalizeAfterNumber: false}), 'turnOn2sv');
+	assert.equal(camelCase('a1b_text', {capitalizeAfterNumber: false}), 'a1bText');
+	assert.equal(camelCase('1hello', {capitalizeAfterNumber: false}), '1hello');
+});
+
+test('the two capitalizeAfterNumber settings agree when there is no digit', () => {
+	// The option is documented as only affecting a letter that immediately follows a digit, so with
+	// no digit in the input the two settings have to produce the same string. Checked over every
+	// three character combination from this alphabet, which is exhaustive for that length.
+	//
+	// No decimal digit, because that is the case the option is about. No U+03A3 and no titlecase
+	// letter either: those are the two documented exceptions, covered by their own test.
+	const characters = [
+		'a',
+		'B',
+		'ß',
+		'İ',
+		'ⅴ',
+		'\u{104B0}',
+		'́',
+		'-',
+		'_',
+		' ',
+		'@',
+		'²',
+	];
+
+	const optionSets = [
+		{},
+		{pascalCase: true},
+		{preserveConsecutiveUppercase: true},
+		{locale: 'tr-TR'},
+	];
+
+	const mismatches = collectMismatches(20);
+	for (const first of characters) {
+		for (const second of characters) {
+			for (const third of characters) {
+				const input = first + second + third;
+				for (const options of optionSets) {
+					const on = camelCase(input, options);
+					const off = camelCase(input, {...options, capitalizeAfterNumber: false});
+					mismatches.record(
+						on === off,
+						() => `${JSON.stringify(input)} ${JSON.stringify(options)}: true gives ${JSON.stringify(on)}, false gives ${JSON.stringify(off)}`,
+					);
+				}
 			}
 		}
 	}

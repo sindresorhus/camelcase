@@ -1,7 +1,11 @@
 const UPPERCASE = /\p{Uppercase_Letter}/v;
 const LOWERCASE = /\p{Lowercase_Letter}/v;
 const ALPHABETIC = /\p{Alphabetic}/v;
-const DIGIT = /\d/v;
+// A decimal digit, not `\d`, which is ASCII only. The identifier class below already counts
+// every script's digits, so the digit run has to count them too or `١foo` misses the boundary that
+// `1foo` gets. `\p{Decimal_Number}` still excludes the \p{Number} characters that are not decimal digits,
+// such as the superscript two, the Roman numeral five and the ideographic zero.
+const DIGIT = /\p{Decimal_Number}/v;
 const LEADING_CAPITAL = /^\p{Uppercase_Letter}(?!\p{Uppercase_Letter})/v;
 const SEPARATORS = /[ \-._]+/v;
 const LEADING_PREFIX = /^[$_]*/v;
@@ -16,10 +20,13 @@ const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source, 'v');
 // atomic would change results for inputs like `a-_-!`, where the trailing `_` is the identifier.
 // eslint-disable-next-line regexp/no-super-linear-move
 const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gv');
-// False positive: `\d` is a subset of the identifier class, so a rejecting suffix costs one
-// backtrack, not one per digit. Measured linear up to 160k digits.
+// False positive: `\p{Decimal_Number}` is a subset of the identifier class, so a rejecting
+// suffix costs one backtrack, not one per digit. Measured linear up to 160k digits, for an
+// ASCII digit and for one outside ASCII.
+// A run of a few million *non-ASCII* digits does overrun V8's regex stack and throws a RangeError
+// instead of taking a long time, which is the readme's "limit the input length" in a sharper form.
 // eslint-disable-next-line regexp/no-super-linear-move
-const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\d+` + IDENTIFIER.source, 'gv');
+const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\p{Decimal_Number}+` + IDENTIFIER.source, 'gv');
 
 const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
 	// Iterate code points, not code units. Letters outside the basic multilingual plane need a
@@ -104,8 +111,10 @@ const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecuti
 			result += character;
 			wasNumberBefore = true;
 		} else if (SEPARATORS.test(character)) {
-			// Separator - keep as-is and maintain wasNumberBefore state
+			// Separator - keep as-is, and end any digit run. A letter after this is after a separator,
+			// not after a digit, so it gets lowercased like any other.
 			result += character;
+			wasNumberBefore = false;
 		} else {
 			// Regular character - lowercase it
 			result += toLowerCase(character);
