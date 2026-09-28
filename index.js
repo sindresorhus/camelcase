@@ -1,10 +1,7 @@
 const UPPERCASE = /\p{Uppercase_Letter}/v;
 const LOWERCASE = /\p{Lowercase_Letter}/v;
 const ALPHABETIC = /\p{Alphabetic}/v;
-// A decimal digit, not `\d`, which is ASCII only. The identifier class below already counts
-// every script's digits, so the digit run has to count them too or `١foo` misses the boundary that
-// `1foo` gets. `\p{Decimal_Number}` still excludes the \p{Number} characters that are not decimal digits,
-// such as the superscript two, the Roman numeral five and the ideographic zero.
+// A decimal digit in any script, not only ASCII like `\d`. Other \p{Number} characters, such as superscripts and Roman numerals, are not digit runs.
 const DIGIT = /\p{Decimal_Number}/v;
 const LEADING_CAPITAL = /^\p{Uppercase_Letter}(?!\p{Uppercase_Letter})/v;
 const SEPARATORS = /[ \-._]+/v;
@@ -12,25 +9,20 @@ const LEADING_PREFIX = /^[$_]*/v;
 
 // The |$ alternative allows matching at end-of-string, capturing empty string
 // This enables NUMBERS_AND_IDENTIFIER to match digits at string end (e.g., "test123")
+//
+// A combining mark with no base letter is not an identifier, so `a-́b` comes back unchanged. A mark after a base letter is fine, so decomposed `café-bar` still gives `caféBar`.
 const IDENTIFIER = /(?<identifier>[\p{Alphabetic}\p{Number}_]|$)/v;
 
 const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source, 'v');
-// A long run of separators followed by a rejecting character backtracks quadratically.
-// This is the documented "limit the input length" limitation in the readme. Making the run
-// atomic would change results for inputs like `a-_-!`, where the trailing `_` is the identifier.
+// A long separator run followed by a rejecting character backtracks quadratically (see the input length note in the readme). An atomic run would change the result for inputs like `a-_-!`, where the trailing `_` is the identifier.
 // eslint-disable-next-line regexp/no-super-linear-move
 const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gv');
-// False positive: `\p{Decimal_Number}` is a subset of the identifier class, so a rejecting
-// suffix costs one backtrack, not one per digit. Measured linear up to 160k digits, for an
-// ASCII digit and for one outside ASCII.
-// A run of a few million *non-ASCII* digits does overrun V8's regex stack and throws a RangeError
-// instead of taking a long time, which is the readme's "limit the input length" in a sharper form.
+// False positive: `\p{Decimal_Number}` is a subset of the identifier class, so a rejecting suffix costs one backtrack, not one per digit. A run of millions of non-ASCII digits can overflow V8's regex stack and throw a RangeError (see the input length note in the readme).
 // eslint-disable-next-line regexp/no-super-linear-move
 const NUMBERS_AND_IDENTIFIER = new RegExp(String.raw`\p{Decimal_Number}+` + IDENTIFIER.source, 'gv');
 
 const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutiveUppercase) => {
-	// Iterate code points, not code units. Letters outside the basic multilingual plane need a
-	// surrogate pair, so indexing the string directly would see two meaningless halves per letter.
+	// Iterate code points, not code units. Letters outside the basic multilingual plane need a surrogate pair, so indexing the string directly would see two meaningless halves per letter.
 	const characters = [...string];
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
@@ -78,6 +70,7 @@ const preserveCamelCase = (string, toLowerCase, toUpperCase, preserveConsecutive
 	return characters.join('');
 };
 
+// Only a lone leading capital is lowercased. Cased characters that are not Uppercase_Letter (titlecase letters, Roman numerals) survive here, while the capitalizeAfterNumber: false path lowercases them.
 const preserveConsecutiveUppercase = (input, toLowerCase) => input.replace(LEADING_CAPITAL, match => toLowerCase(match));
 
 const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecutiveUppercase) => {
@@ -91,8 +84,7 @@ const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecuti
 		const character = characters[index];
 		const isUpperCase = UPPERCASE.test(character);
 
-		// Mirrors LEADING_CAPITAL: a lone capital at the very start of the string is lowercased,
-		// even when preserveConsecutiveUppercase is on.
+		// Mirrors LEADING_CAPITAL: a lone capital at the very start of the string is lowercased, even when preserveConsecutiveUppercase is on.
 		const isLoneLeadingCapital = index === 0
 			&& isUpperCase
 			&& !(index + 1 < characters.length && UPPERCASE.test(characters[index + 1]));
@@ -102,21 +94,18 @@ const processWithCasePreservation = (input, toLowerCase, shouldPreserveConsecuti
 			result += character;
 			wasNumberBefore = false;
 		} else if (shouldPreserveConsecutiveUppercase && isUpperCase && !isLoneLeadingCapital) {
-			// Mirror the capitalizeAfterNumber: true path, which leaves the whole string cased and only
-			// lowercases a lone leading capital. Testing only for a neighbouring uppercase character
-			// would wrongly lowercase a capital that follows, say, a punctuation mark.
+			// Mirror the capitalizeAfterNumber: true path, which keeps every capital except a lone leading one.
 			result += character;
 		} else if (DIGIT.test(character)) {
 			// Number - keep as-is and track it
 			result += character;
 			wasNumberBefore = true;
 		} else if (SEPARATORS.test(character)) {
-			// Separator - keep as-is, and end any digit run. A letter after this is after a separator,
-			// not after a digit, so it gets lowercased like any other.
+			// Separator - keep as-is, and end any digit run, so the next letter is lowercased like any other.
 			result += character;
 			wasNumberBefore = false;
 		} else {
-			// Regular character - lowercase it
+			// Regular character - lowercase it. This goes one character at a time, so U+03A3 never becomes the final sigma, which depends on the surrounding characters.
 			result += toLowerCase(character);
 			wasNumberBefore = false;
 		}
