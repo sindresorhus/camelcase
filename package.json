@@ -1,6 +1,6 @@
 {
 	"name": "camelcase",
-	"version": "9.0.0",
+	"version": "10.0.0",
 	"description": "Convert a dash/dot/underscore/space separated string to camelCase or PascalCase: `foo-bar` → `fooBar`",
 	"license": "MIT",
 	"repository": "sindresorhus/camelcase",
